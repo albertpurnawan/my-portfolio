@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +52,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -65,6 +66,14 @@ const Navigation = () => {
                 {item.label}
               </button>
             ))}
+            
+            <Link
+              to="/admin"
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-portfolio-text hover:text-portfolio-accent transition-colors"
+            >
+              <Settings size={16} />
+              Admin
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -94,6 +103,15 @@ const Navigation = () => {
                 {item.label}
               </button>
             ))}
+            
+            <Link
+              to="/admin"
+              className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-portfolio-text hover:text-portfolio-accent transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              <Settings size={16} />
+              Admin
+            </Link>
           </div>
         )}
       </div>
