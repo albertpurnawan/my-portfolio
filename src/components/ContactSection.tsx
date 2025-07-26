@@ -43,7 +43,7 @@ const ContactSection = () => {
                 <Mail size={24} />
               </div>
               <h3 className="text-lg font-semibold text-portfolio-text mb-2">Email</h3>
-              <p className="text-portfolio-muted">jonathan.parlaungan@example.com</p>
+              <p className="text-portfolio-muted">albertpurnawan1@gmail.com</p>
             </div>
 
             <div className="bg-portfolio-navy p-6 rounded-xl border border-portfolio-blue">
@@ -51,7 +51,7 @@ const ContactSection = () => {
                 <Phone size={24} />
               </div>
               <h3 className="text-lg font-semibold text-portfolio-text mb-2">Phone</h3>
-              <p className="text-portfolio-muted">+62 812 3456 7890</p>
+              <p className="text-portfolio-muted">+62 851 5684 5984</p>
             </div>
 
             <div className="bg-portfolio-navy p-6 rounded-xl border border-portfolio-blue">
@@ -59,7 +59,7 @@ const ContactSection = () => {
                 <MapPin size={24} />
               </div>
               <h3 className="text-lg font-semibold text-portfolio-text mb-2">Location</h3>
-              <p className="text-portfolio-muted">Jakarta, Indonesia</p>
+              <p className="text-portfolio-muted">Tangerang, Indonesia</p>
             </div>
           </div>
 

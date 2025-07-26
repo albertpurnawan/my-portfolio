@@ -8,8 +8,20 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useProjectStore } from '../../stores/projectStore';
 
+interface Project {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  tech: string[];
+  date: string;
+  github: string;
+  demo: string;
+}
+
 interface ProjectFormProps {
-  project?: any;
+  project?: Project;
   onClose: () => void;
 }
 
@@ -153,7 +165,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 id="github"
                 value={formData.github}
                 onChange={(e) => handleChange('github', e.target.value)}
-                placeholder="https://github.com/..."
+                placeholder="https://github.com/albertpurnawan?tab=repositories"
               />
             </div>
 

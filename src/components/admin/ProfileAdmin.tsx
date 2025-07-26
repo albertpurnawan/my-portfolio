@@ -10,12 +10,12 @@ import { useProfileStore } from '../../stores/profileStore';
 const ProfileAdmin = () => {
   const { profile, updateProfile } = useProfileStore();
   const [formData, setFormData] = useState({
-    name: profile.name || 'Jonathan Robert Parlaungan',
+    name: profile.name || 'Jonathan Albert Purnawan',
     location: profile.location || 'Jakarta, Indonesia',
     description: profile.description || 'Software Engineer passionate about creating innovative web solutions.',
-    email: profile.email || 'jonathan@example.com',
-    github: profile.github || 'https://github.com',
-    linkedin: profile.linkedin || 'https://linkedin.com',
+    email: profile.email || 'albertpurnawan1@gmail.com',
+    github: profile.github || 'https://github.com/albertpurnawan?tab=repositories',
+    linkedin: profile.linkedin || 'https://www.linkedin.com/in/albertpurnawan/',
     profileImage: profile.profileImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'
   });
 
@@ -101,7 +101,7 @@ const ProfileAdmin = () => {
                   id="github"
                   value={formData.github}
                   onChange={(e) => handleChange('github', e.target.value)}
-                  placeholder="https://github.com/username"
+                  placeholder="https://github.com/albertpurnawan?tab=repositories"
                 />
               </div>
 
@@ -111,7 +111,7 @@ const ProfileAdmin = () => {
                   id="linkedin"
                   value={formData.linkedin}
                   onChange={(e) => handleChange('linkedin', e.target.value)}
-                  placeholder="https://linkedin.com/in/username"
+                  placeholder="https://www.linkedin.com/in/albertpurnawan/"
                 />
               </div>
             </div>

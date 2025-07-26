@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <h3 className="text-2xl font-bold gradient-text mb-4">
-              Jonathan Robert Parlaungan
+              Jonathan Albert Purnawan
             </h3>
             <p className="text-portfolio-muted mb-4">
               Full Stack Developer passionate about creating innovative web solutions 
@@ -17,19 +17,19 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a
-                href="https://github.com"
+                href="https://github.com/albertpurnawan?tab=repositories"
                 className="w-10 h-10 bg-portfolio-dark rounded-lg flex items-center justify-center hover:bg-portfolio-accent transition-colors"
               >
                 <Github size={18} />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/albertpurnawan/"
                 className="w-10 h-10 bg-portfolio-dark rounded-lg flex items-center justify-center hover:bg-portfolio-accent transition-colors"
               >
                 <Linkedin size={18} />
               </a>
               <a
-                href="mailto:jonathan@example.com"
+                href="mailto:albertpurnawan1@gmail.com"
                 className="w-10 h-10 bg-portfolio-dark rounded-lg flex items-center justify-center hover:bg-portfolio-accent transition-colors"
               >
                 <Mail size={18} />
@@ -72,7 +72,7 @@ const Footer = () => {
 
         <div className="border-t border-portfolio-blue mt-8 pt-8 text-center">
           <p className="text-portfolio-muted flex items-center justify-center gap-2">
-            Made with <Heart size={16} className="text-red-500" /> by Jonathan Robert Parlaungan
+            Made by Jonathan Albert Purnawan
           </p>
           <p className="text-portfolio-muted text-sm mt-2">
             © 2024 All rights reserved.
