@@ -1,11 +1,11 @@
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { useState } from 'react';
 import emailjs from 'emailjs-com';
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-const TEMPLATE_ID_PENGIRIM = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_PENGIRIM;
-const USER_ID = import.meta.env.VITE_EMAILJS_USER_ID;
-const CONTACT_EMAIL = import.meta.env.VITE_CONTACT_EMAIL;
+const SERVICE_ID = import.meta.env.EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.EMAILJS_TEMPLATE_ID;
+const TEMPLATE_ID_PENGIRIM = import.meta.env.EMAILJS_TEMPLATE_ID_PENGIRIM;
+const USER_ID = import.meta.env.EMAILJS_USER_ID;
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL;
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
