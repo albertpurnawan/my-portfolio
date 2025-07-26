@@ -66,14 +66,14 @@ const Navigation = () => {
                 {item.label}
               </button>
             ))}
-            
+{/*             
             <Link
               to="/admin"
               className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-portfolio-text hover:text-portfolio-accent transition-colors"
             >
               <Settings size={16} />
               Admin
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -104,14 +104,14 @@ const Navigation = () => {
               </button>
             ))}
             
-            <Link
+            {/* <Link
               to="/admin"
               className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-md text-base font-medium text-portfolio-text hover:text-portfolio-accent transition-colors"
               onClick={() => setIsOpen(false)}
             >
               <Settings size={16} />
               Admin
-            </Link>
+            </Link> */}
           </div>
         )}
       </div>
