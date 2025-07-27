@@ -4,39 +4,100 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 const ExperienceSection = () => {
   const experiences = [
     {
-      title: 'Senior Software Engineer',
-      company: 'Tech Innovations Inc.',
-      location: 'Jakarta, Indonesia',
-      period: '2022 - Present',
-      description: 'Lead development of scalable web applications using React, Node.js, and cloud technologies. Mentor junior developers and implement best practices.',
+      title: 'Cipta IT Developer',
+      company: 'PT. Bank CIMB Niaga Tbk',
+      location: 'Tangerang, Indonesia',
+      period: 'Feb 2025 – Present',
+      description: [
+        'Overhauled the mobile interface of the Arjuna project, modernizing numerous features ranging from Icons and Themes to Attendance Progress to deliver a more intuitive and cohesive user experience.',
+        'Refactored core logic to increase efficiency and flexibility, while reorganizing the file structure to promote clarity, scalability, and adherence to clean code principles.',
+        'Worked collaboratively with QA, UI/UX, backend, and project management teams to ensure the redesigned mobile interface met functional, aesthetic, and performance standards.'
+      ],
       achievements: [
-        'Led team of 5 developers',
-        'Increased app performance by 40%',
-        'Implemented CI/CD pipelines'
+        'Successfully modernized Arjuna mobile UI for improved user experience.',
+        'Refactored and reorganized codebase for scalability and maintainability.',
+        'Ensured cross-team collaboration for high-quality deliverables.'
       ]
     },
     {
-      title: 'Full Stack Developer',
-      company: 'Digital Solutions Ltd.',
-      location: 'Jakarta, Indonesia', 
-      period: '2020 - 2022',
-      description: 'Developed and maintained multiple client projects using modern web technologies. Collaborated with design teams to create user-friendly interfaces.',
+      title: 'Senior Fullstack Developer',
+      company: 'PT. Beone Optima Solusi',
+      location: 'Tangerang, Indonesia',
+      period: 'Nov 2024 – Feb 2025',
+      description: [
+        'Developed POS frontend systems for SESA and Topgolf projects using Flutter (Bloc) and SQLite, supporting modules such as Sales, Shift, Reports, Stock, MOP Adjustment, and Settings with offline-first capabilities.',
+        'Architected and implemented full ERP solutions with modules including Dashboard, Admin, Master Data, Sales, Purchase, Inventory, Promotion, Finance, and Reporting using PHP Laravel and SQLite.',
+        'Built and launched BeOne BI, a financial reporting platform using PHP Laravel (web) and React Native (mobile), handling complex multi-dimensional data via PostgreSQL.',
+        'Designed and integrated RESTful APIs for seamless communication between frontend and backend systems, improving data consistency and reliability.',
+        'Deployed scalable cloud-native applications to Alibaba Cloud, leveraging cloud tools for high performance and security.',
+        'Automated deployment workflows using CI/CD pipelines, improving release frequency and reducing human error during deployment.',
+        'Containerized projects with Docker, enabling standardized development environments and simplified deployment pipelines.',
+        'Conducted comprehensive testing using Unit Testing and Postman to ensure code reliability and system robustness.',
+        'Acted as technical lead for multiple projects by conducting code reviews for junior developers to ensure code quality and maintain best practices.',
+        'Guided and mentored junior developers throughout the software development lifecycle.',
+        'Delivered project progress and updates directly to internal stakeholders, aligning development with business needs.',
+        'Evaluated and selected tech stacks based on project requirements, balancing performance, scalability, and team capabilities.',
+        'Maintained and optimized legacy codebases, improving system stability, scalability, and long-term maintainability.'
+      ],
       achievements: [
-        'Built 15+ client projects',
-        'Reduced load times by 30%',
-        'Integrated payment systems'
+        'Boosted POS user task efficiency by 35% through streamlined UI/UX flows and offline functionality.',
+        'Reduced report generation time in BeOne BI by over 50% with optimized SQL queries and asynchronous data processing.',
+        'Achieved 80% increase in deployment success rate through fully automated CI/CD and Docker integration.',
+        'Maintained 99.9% system uptime post-cloud migration to Alibaba Cloud with improved scaling and monitoring strategies.'
       ]
     },
     {
-      title: 'Frontend Developer',
-      company: 'StartupXYZ',
-      location: 'Jakarta, Indonesia',
-      period: '2019 - 2020',
-      description: 'Created responsive web applications and mobile-first designs. Worked closely with UX/UI designers to implement pixel-perfect designs.',
+      title: 'Software Developer',
+      company: 'PT. Sumber Inovasi Informatika',
+      location: 'Tangerang, Indonesia',
+      period: 'Nov 2023 – Nov 2024',
+      description: [
+        'Led backend development for two ERP platforms (Unirama & Central SPS) using Frappe and Python, covering modules such as HR, Helpdesk, LMS, Stock, and Accounting for 100+ daily users.',
+        'Developed and integrated RESTful APIs to ensure seamless data exchange between frontend and third-party services, reducing sync latency by 40%.',
+        'Optimized MariaDB queries and backend performance to significantly reduce response times across all modules.',
+        'Automated CI/CD pipelines and containerized applications using Docker, enabling consistent deployments across Frappe Cloud and AWS EC2 environments.',
+        'Contributed to system stability through rigorous unit testing and API testing, ensuring reliable feature releases with minimal downtime.'
+      ],
       achievements: [
-        'Launched 3 major products',
-        'Improved user engagement by 25%',
-        'Optimized mobile experience'
+        'Reduced sync latency by 40% through API integration.',
+        'Significantly improved backend response times with query optimization.',
+        'Enabled consistent deployments via Docker and CI/CD automation.'
+      ]
+    },
+    {
+      title: 'Technical Solution Architect',
+      company: 'PT. Mastersystem Infotama',
+      location: 'Jakarta, Indonesia',
+      period: 'Jun 2023 - Sep 2023',
+      description: [
+        'Designed and delivered an NLP-based solution for real-time sentiment analysis across multiple social media platforms, reducing customer feedback response time by 60% and identifying product issues faster.',
+        'Architected an internal face recognition system with third-party API integration, improving recognition accuracy by 45% even under significant facial changes.',
+        'Created detailed architecture diagrams, system specifications, and implementation plans to support solution delivery.',
+        'Collaborated with third-party vendors and internal engineering teams to troubleshoot and resolve technical issues during development and post-deployment phases.',
+        'Conducted manual testing on production-level web and mobile applications, and documented root cause analyses to accelerate defect resolution cycles.'
+      ],
+      achievements: [
+        'Reduced customer feedback response time by 60% with NLP solution.',
+        'Improved face recognition accuracy by 45% through API integration.',
+        'Accelerated defect resolution cycles with thorough testing and documentation.'
+      ]
+    },
+    {
+      title: 'Application Developer Intern',
+      company: 'PT Mayora Indah TBK',
+      location: 'Jakarta, Indonesia',
+      period: 'Feb 2022 – Feb 2023',
+      description: [
+        'Developed 7 web-based applications for the Finance and Tax division using Java Spring Boot, Vanilla JavaScript, Oracle SQL, HTML, and CSS to streamline daily operational workflows.',
+        'Designed and built a mobile-based Help Desk application using Flutter, Node.js, and PostgreSQL as part of a thesis project, enhancing internal support efficiency.',
+        'Collaborated with cross-functional teams to gather and analyze requirements, ensuring seamless system integration.',
+        'Troubleshot and debugged existing applications, improving performance by 50–70% and optimizing data processing through indexing (B-tree) and query tuning.',
+        'Increased backend responsiveness and data efficiency across financial systems through database optimization strategies.'
+      ],
+      achievements: [
+        'Streamlined daily workflows for Finance and Tax division with 7 new apps.',
+        'Enhanced internal support efficiency with mobile Help Desk app.',
+        'Improved application performance by up to 70% through optimization.'
       ]
     }
   ];
@@ -44,9 +105,9 @@ const ExperienceSection = () => {
   const education = [
     {
       degree: 'Bachelor of Computer Science',
-      school: 'University of Indonesia',
-      period: '2015 - 2019',
-      gpa: 'GPA: 3.8/4.0'
+      school: 'Universitas Bina Nusantara',
+      period: '2019 - 2023',
+      gpa: 'GPA: 3.44/4.0'
     }
   ];
 
@@ -76,7 +137,7 @@ const ExperienceSection = () => {
                       {exp.period}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-portfolio-accent font-medium">{exp.company}</span>
                     <ArrowRight size={16} className="text-portfolio-muted" />
@@ -86,7 +147,14 @@ const ExperienceSection = () => {
                     </div>
                   </div>
 
-                  <p className="text-portfolio-muted mb-4">{exp.description}</p>
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-portfolio-text">Job Details:</h4>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-portfolio-muted">
+                      {exp.description.map((desc, idx) => (
+                        <li key={idx}>{desc}</li>
+                      ))}
+                    </ul>
+                  </div>
 
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium text-portfolio-text">Key Achievements:</h4>
@@ -126,8 +194,11 @@ const ExperienceSection = () => {
                 <div className="space-y-4">
                   {[
                     { skill: 'React/Vue.js', level: '95%' },
+                    { skill: 'React Native', level: '90%' },
+                    { skill: 'Flutter', level: '90%' },
                     { skill: 'Node.js', level: '90%' },
                     { skill: 'TypeScript', level: '85%' },
+                    { skill: 'Python', level: '80%' },
                     { skill: 'Database Design', level: '80%' },
                     { skill: 'Cloud Services', level: '75%' }
                   ].map((item, index) => (

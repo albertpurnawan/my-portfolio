@@ -7,25 +7,25 @@ const AboutSection = () => {
       icon: <Code size={24} />,
       title: 'Frontend Development',
       description: 'React, Vue.js, TypeScript, Tailwind CSS',
-      projects: '25+ Projects'
+      projects: '20+ Projects'
     },
     {
       icon: <Database size={24} />,
       title: 'Backend Development', 
-      description: 'Node.js, Express, PostgreSQL, MongoDB',
+      description: 'Node.js, Express, Python, PHP, PostgreSQL, MongoDB',
       projects: '20+ Projects'
     },
     {
       icon: <Globe size={24} />,
       title: 'Full Stack Solutions',
       description: 'End-to-end web application development',
-      projects: '15+ Projects'
+      projects: '20+ Projects'
     },
     {
       icon: <Smartphone size={24} />,
       title: 'Mobile Development',
       description: 'React Native, Flutter',
-      projects: '10+ Projects'
+      projects: '5+ Projects'
     }
   ];
 
@@ -37,7 +37,7 @@ const AboutSection = () => {
             About <span className="gradient-text">Me</span>
           </h2>
           <p className="text-xl text-portfolio-muted max-w-3xl mx-auto">
-            I'm a passionate software engineer with over 5 years of experience building 
+            I'm a passionate software engineer with over 3 years of experience building 
             scalable web applications and mobile solutions. I love turning complex problems 
             into simple, beautiful designs.
           </p>
@@ -80,10 +80,10 @@ const AboutSection = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16 animate-fade-in">
           {[
-            { number: '70+', label: 'Projects Completed' },
-            { number: '5+', label: 'Years Experience' },
-            { number: '50+', label: 'Happy Clients' },
-            { number: '15+', label: 'Technologies' }
+            { number: '20+', label: 'Projects Completed' },
+            { number: '3+', label: 'Years Experience' },
+            { number: '5+', label: 'Happy Clients' },
+            { number: '10+', label: 'Technologies' }
           ].map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl lg:text-4xl font-bold gradient-text mb-2">

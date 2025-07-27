@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Linkedin } from 'lucide-react';
 import { useState } from 'react';
 import emailjs from 'emailjs-com';
 const SERVICE_ID = import.meta.env.EMAILJS_SERVICE_ID;
@@ -93,10 +93,10 @@ const ContactSection = () => {
 
             <div className="bg-portfolio-navy p-6 rounded-xl border border-portfolio-blue">
               <div className="text-portfolio-accent mb-4">
-                <Phone size={24} />
+                <Linkedin size={24} />
               </div>
-              <h3 className="text-lg font-semibold text-portfolio-text mb-2">Phone</h3>
-              <p className="text-portfolio-muted">+62 851 5684 5984</p>
+              <h3 className="text-lg font-semibold text-portfolio-text mb-2">LinkedIn</h3>
+              <a href="https://www.linkedin.com/in/albertpurnawan/" target="_blank" rel="noopener noreferrer" className="text-portfolio-muted underline hover:text-portfolio-accent transition-colors">linkedin.com/in/albertpurnawan</a>
             </div>
 
             <div className="bg-portfolio-navy p-6 rounded-xl border border-portfolio-blue">
