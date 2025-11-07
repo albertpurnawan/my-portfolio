@@ -1,4 +1,4 @@
-# My Portfolio
+# my-portfolio
 
 Personal portfolio site built with Vite + React + TypeScript + Tailwind.
 
@@ -9,8 +9,8 @@ Requirements:
 
 Steps:
 ```sh
-git clone <YOUR_GIT_URL>
-cd <YOUR_PROJECT_NAME>
+git clone https://github.com/albertpurnawan/my-portfolio.git
+cd my-portfolio
 npm i
 npm run dev
 ```
@@ -29,12 +29,12 @@ This project includes a production-ready Dockerfile that builds the app and serv
 
 Build image:
 ```sh
-docker build -t snappy-folio-site .
+docker build -t my-portfolio .
 ```
 
 Run container:
 ```sh
-docker run -p 8080:80 snappy-folio-site
+docker run -p 8080:80 my-portfolio
 ```
 
 Open the app:
