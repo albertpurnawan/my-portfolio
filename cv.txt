@@ -1,0 +1,154 @@
+Jonathan Albert Purnawan
+Tangerang, Indonesia​
++62 851 5684 5984 | albertpurnawan1@gmail.com​
+linkedin.com/in/albertpurnawan
+
+
+
+Professional Summary
+Highly driven Senior Full-Stack & Mobile Developer with 4+ years of experience
+delivering scalable ERP, POS, and HRMS solutions across finance, logistics, and retail
+sectors. Proven track record in building high-performance systems, architecting CI/CD
+automation, and migrating monolithic architectures into microservices. Passionate about
+creating clean, maintainable codebases and exploring AI-driven system design.
+
+
+
+Core Competencies
+   ●​ Full-Stack & Mobile Development (Flutter, Go, Laravel, React, Vue, Node.js)
+   ●​ RESTful API & Microservices Architecture
+   ●​ Database Design & Optimization (PostgreSQL, MariaDB, MySQL, SQLite)
+   ●​ Cloud & DevOps (AWS, Alibaba Cloud, Docker, Jenkins, Kubernetes)
+   ●​ CI/CD Automation, Deployment Pipelines, and Testing Frameworks
+   ●​ Agile Development, System Design, and Team Collaboration
+
+
+Professional Experience
+Mobile Developer
+PT Bank CIMB Niaga Tbk — Tangerang, Indonesia​
+Feb 2025 – Present
+   ●​ Collaborated with a cross-functional team of 12 members, including 2 Mobile
+      Developers, 3 Frontend Developers, 2 Backend Developers, 3 QA Engineers, 1
+      Technical Lead, 1 Project Manager, and 1 Co-Product Owner, improving the
+      Arjuna HRMS Mobile App used by 10,000+ employees and 200+ active users
+      daily.
+   ●​ Led the refactor and modernization of legacy code into Flutter Clean
+      Architecture, improving app performance and reducing bug re-occurrence by
+      45%.
+   ●​ Designed and implemented Unit, Widget, and Integration Tests, achieving 75%
+      coverage and reducing regression incidents by 60%.
+   ●​ Built automated Jenkins pipelines for mobile deployment, cutting manual release
+      effort by 70% and ensuring consistent delivery.
+   ●​ Designed new system architecture blueprints for mobile-backend
+      synchronization, reducing API inconsistencies and improving request handling by
+      30%.
+Tech Stack: Flutter, Jenkins, SQLite, PostgreSQL, Bitbucket, Jira
+
+Senior Full-Stack Developer
+PT BeOne Optima Solusi — Tangerang, Indonesia​
+Nov 2024 – Feb 2025
+   ●​ Led a 6-person cross-functional team consisting of 3 Backend Developers, 1
+      Frontend Developer, 1 QA Engineer, and 1 Project Manager, developing ERP
+      and POS systems for 100+ users handling 500+ daily transactions across
+      multiple retail sites.
+   ●​ Delivered BeOne BI, a financial reporting platform (Laravel + React Native +
+      PostgreSQL) that cut report generation time by 50% through optimized SQL and
+      asynchronous data pipelines.
+   ●​ Built and maintained POS systems (Flutter, Bloc, SQLite) with offline-first
+      functionality, improving user task completion rate by 35%.
+   ●​ Refactored monolithic backends into microservices (Go + TypeScript), reducing
+      build complexity and improving modular scalability.
+   ●​ Migrated infrastructure from Huawei Cloud → Alibaba Cloud, improving uptime to
+      99.9% and cutting deployment time from 20 min → 5 min.
+   ●​ Set up CI/CD pipelines (Jenkins + Docker) with automated testing, increasing
+      deployment frequency by 80% and reducing human error to near-zero.
+   ●​ Mentored junior developers and led code review sessions, improving team
+      productivity and code quality consistency by ~40%.
+Tech Stack: Go (Gin), TypeScript, PHP (Laravel), React.js, Vue.js, Flutter, React Native,
+PostgreSQL, MySQL, SQLite, Docker, Kubernetes, Jenkins, Huawei Cloud, Alibaba
+Cloud
+
+
+
+Software Developer (Backend Focus)
+PT Agile Technica — Tangerang, Indonesia​
+Nov 2023 – Nov 2024
+   ●​ Collaborated with a core team of 2 Backend Developers, 1 Frontend Developer,
+      1 Project Manager, and 1 QA Engineer, maintaining ERP systems for 100+
+      users, 1,000+ daily transactions, and 100+ employees.
+   ●​ Enhanced ERP modules (HR, Helpdesk, LMS, Accounting) built on Python
+      Frappe, boosting query efficiency by ~45% through indexing, cron jobs, and
+      queue logic refactor.
+   ●​ Automated deployments with Docker and Kubernetes on AWS, improving
+      deployment success rate by 80% and ensuring high-availability services.
+   ●​ Implemented custom task schedulers and scaling logic, reducing data sync
+      delays from 30s → 10s during peak usage.
+   ●​ Set up backend observability dashboards, improving incident response time by
+      60% through log-based alerting and monitoring.
+Tech Stack: Python (Frappe), MariaDB, AWS, Docker, Kubernetes
+
+Technical Solution Architect
+PT Mastersystem Infotama — Jakarta, Indonesia​
+Jun 2023 – Sep 2023
+   ●​ Worked in a cross-functional team of 4 Cloud Engineers, 1 Project Manager, and
+      1 Senior Manager to design AI-driven enterprise solutions for financial clients.
+   ●​ Architected a facial-recognition attendance system using AWS Rekognition and
+      third-party OCR APIs, improving authentication speed and reducing manual
+      validation effort by 50%.
+   ●​ Built an NLP-based social media sentiment analysis pipeline via AWS
+      Comprehend, enabling real-time feedback classification on 10,000+ daily
+      mentions, cutting manual review time by ~60%.
+   ●​ Delivered technical documentation, deployment diagrams, and validation reports
+      for system handover to enterprise teams.
+   ●​ Conducted testing and integration of AI services into client systems, improving
+      detection accuracy and API stability.
+Tech Stack: AWS Recognition, AWS Comprehend, OCR APIs, AWS Cloud Services
+
+Application Developer Intern
+PT Mayora Indah Tbk — Jakarta, Indonesia​
+Feb 2022 – Feb 2023
+   ●​ Collaborated with a mentor (Lead Developer) as a Full-Stack Developer in the
+      Finance division, supporting 100+ users and processing up to 1,000 daily
+      transactions.
+   ●​ Developed and maintained 7+ internal finance and tax applications using Java
+      Spring Boot, JavaScript, Flutter, and MariaDB, integrated with SAP.
+   ●​ Enhanced backend logic and optimized database performance through B-Tree
+      indexing and query refactoring, achieving ~70% faster response times.
+   ●​ Refactored the frontend into a clean architecture pattern with improved state
+      management, introducing lazy loading and skeleton UI, which reduced initial
+      render time by 35%.
+   ●​ Collaborated with stakeholders to test and deploy production releases, ensuring
+      seamless system adoption across the finance department.
+Tech Stack: Java Spring Boot, Flutter, JavaScript, MariaDB, SAP
+
+Education
+Bina Nusantara University — Bachelor of Computer Science (GPA 3.44 / 4.00)​
+Sep 2019 – Apr 2023 | Tangerang, Indonesia
+   ●​ Graduated in 3.5 years | KMK Organization Activist | Internship at PT Mayora
+      Indah Tbk
+Binar Academy Bootcamp — Full-Stack Web Development​
+Mar 2021 – Oct 2021 | Tangerang, Indonesia
+   ●​ Built e-commerce, music player, and game apps using React and Node.js
+   ●​ Rated “Very Good” (4.6/5) in Hard Skills
+
+
+Technical Skills
+Frontend / Web: React.js, Next.js, Vue.js, JavaScript, HTML, CSS, Tailwind, Bootstrap​
+Backend / API: Go (Gin, Beego), Node.js (Express), PHP (Laravel), Python, Java
+(Spring Boot)​
+Mobile: Flutter, React Native​
+Database: PostgreSQL, MySQL, MariaDB, Oracle SQL, SQLite​
+DevOps / Tools: Docker, Git, CI/CD, Jenkins, GitHub Actions, Postman, Figma, VS
+Code​
+Cloud Platforms: AWS, Alibaba Cloud, Frappe Cloud​
+Testing: Postman, Unit Testing, Integration Testing, Widget Testing (Python, Dart, Go,
+Java, JavaScript, TypeScript)​
+Other: Java, C, C++, UML, System Design, Data Flow Diagram
+Projects
+Personal Projects:​
+Developed and maintained 7+ personal applications with modular architecture and
+CI/CD automation.
+Client Projects:​
+Delivered 11+ scalable client systems with high performance, maintainability, and API
+integration across ERP, POS, and mobile ecosystems.
+

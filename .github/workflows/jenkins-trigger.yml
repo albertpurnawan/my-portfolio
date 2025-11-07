@@ -1,0 +1,62 @@
+name: Trigger Jenkins
+
+on:
+  push:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install jq
+        run: sudo apt-get update -y && sudo apt-get install -y jq
+
+      - name: Determine branch
+        id: branch
+        run: echo "branch=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+
+      - name: Get Jenkins crumb (optional)
+        id: crumb
+        env:
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_API_TOKEN: ${{ secrets.JENKINS_API_TOKEN }}
+        run: |
+          set -e
+          RESP=$(curl -s --user "$JENKINS_USER:$JENKINS_API_TOKEN" "$JENKINS_URL/crumbIssuer/api/json" || true)
+          CRUMB=$(echo "$RESP" | jq -r '.crumb // empty')
+          echo "crumb=$CRUMB" >> $GITHUB_OUTPUT
+
+      - name: Trigger Jenkins build
+        env:
+          JENKINS_URL: ${{ secrets.JENKINS_URL }}
+          JENKINS_JOB: ${{ secrets.JENKINS_JOB }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_API_TOKEN: ${{ secrets.JENKINS_API_TOKEN }}
+          REGISTRY_REPO: ${{ secrets.REGISTRY_REPO }}
+          DEPLOY_HOST_STAGING: ${{ secrets.DEPLOY_HOST_STAGING }}
+          DEPLOY_HOST_PROD: ${{ secrets.DEPLOY_HOST_PROD }}
+          STAGING_DOCKER_PORT: ${{ secrets.STAGING_DOCKER_PORT }}
+          PROD_DOCKER_PORT: ${{ secrets.PROD_DOCKER_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          SSH_CREDENTIALS_ID: ${{ secrets.SSH_CREDENTIALS_ID }}
+        run: |
+          set -e
+          BRANCH="${{ steps.branch.outputs.branch }}"
+          CRUMB="${{ steps.crumb.outputs.crumb }}"
+          HEADER_CRUMB=""
+          if [ -n "$CRUMB" ]; then HEADER_CRUMB="-H Jenkins-Crumb: $CRUMB"; fi
+          curl -s -X POST "$JENKINS_URL/job/$JENKINS_JOB/buildWithParameters" \
+            --user "$JENKINS_USER:$JENKINS_API_TOKEN" \
+            $HEADER_CRUMB \
+            --data-urlencode "TARGET_ENV=auto" \
+            --data-urlencode "REGISTRY_REPO=$REGISTRY_REPO" \
+            --data-urlencode "DEPLOY_HOST_STAGING=$DEPLOY_HOST_STAGING" \
+            --data-urlencode "DEPLOY_HOST_PROD=$DEPLOY_HOST_PROD" \
+            --data-urlencode "STAGING_DOCKER_PORT=${STAGING_DOCKER_PORT:-8081}" \
+            --data-urlencode "PROD_DOCKER_PORT=${PROD_DOCKER_PORT:-8080}" \
+            --data-urlencode "DEPLOY_USER=${DEPLOY_USER:-root}" \
+            --data-urlencode "SSH_CREDENTIALS_ID=$SSH_CREDENTIALS_ID" \
+            --data-urlencode "BRANCH=$BRANCH"
+

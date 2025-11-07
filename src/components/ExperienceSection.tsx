@@ -4,100 +4,98 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 const ExperienceSection = () => {
   const experiences = [
     {
-      title: 'Cipta IT Developer',
-      company: 'PT. Bank CIMB Niaga Tbk',
+      title: 'Mobile Developer',
+      company: 'PT Bank CIMB Niaga Tbk',
       location: 'Tangerang, Indonesia',
       period: 'Feb 2025 – Present',
       description: [
-        'Overhauled the mobile interface of the Arjuna project, modernizing numerous features ranging from Icons and Themes to Attendance Progress to deliver a more intuitive and cohesive user experience.',
-        'Refactored core logic to increase efficiency and flexibility, while reorganizing the file structure to promote clarity, scalability, and adherence to clean code principles.',
-        'Worked collaboratively with QA, UI/UX, backend, and project management teams to ensure the redesigned mobile interface met functional, aesthetic, and performance standards.'
+        'Improved the Arjuna HRMS Mobile App used by 10,000+ employees and 200+ active daily users within a cross-functional team of 12.',
+        'Refactored legacy code into Flutter Clean Architecture, improving performance and reducing bug re-occurrence by 45%.',
+        'Implemented Unit, Widget, and Integration Tests with ~75% coverage, reducing regression incidents by ~60%.',
+        'Built automated Jenkins pipelines for mobile deployment, cutting manual release effort by ~70%.',
+        'Designed mobile-backend sync architecture, reducing API inconsistencies and improving request handling by ~30%.'
       ],
       achievements: [
-        'Successfully modernized Arjuna mobile UI for improved user experience.',
-        'Refactored and reorganized codebase for scalability and maintainability.',
-        'Ensured cross-team collaboration for high-quality deliverables.'
+        '45% fewer recurring bugs via Clean Architecture refactor.',
+        '~75% test coverage and ~60% fewer regressions.',
+        '~70% reduction in manual release effort with Jenkins.',
+        '~30% improvement in request handling efficiency.'
       ]
     },
     {
-      title: 'Senior Fullstack Developer',
-      company: 'PT. Beone Optima Solusi',
+      title: 'Senior Full-Stack Developer',
+      company: 'PT BeOne Optima Solusi',
       location: 'Tangerang, Indonesia',
       period: 'Nov 2024 – Feb 2025',
       description: [
-        'Developed POS frontend systems for SESA and Topgolf projects using Flutter (Bloc) and SQLite, supporting modules such as Sales, Shift, Reports, Stock, MOP Adjustment, and Settings with offline-first capabilities.',
-        'Architected and implemented full ERP solutions with modules including Dashboard, Admin, Master Data, Sales, Purchase, Inventory, Promotion, Finance, and Reporting using PHP Laravel and SQLite.',
-        'Built and launched BeOne BI, a financial reporting platform using PHP Laravel (web) and React Native (mobile), handling complex multi-dimensional data via PostgreSQL.',
-        'Designed and integrated RESTful APIs for seamless communication between frontend and backend systems, improving data consistency and reliability.',
-        'Deployed scalable cloud-native applications to Alibaba Cloud, leveraging cloud tools for high performance and security.',
-        'Automated deployment workflows using CI/CD pipelines, improving release frequency and reducing human error during deployment.',
-        'Containerized projects with Docker, enabling standardized development environments and simplified deployment pipelines.',
-        'Conducted comprehensive testing using Unit Testing and Postman to ensure code reliability and system robustness.',
-        'Acted as technical lead for multiple projects by conducting code reviews for junior developers to ensure code quality and maintain best practices.',
-        'Guided and mentored junior developers throughout the software development lifecycle.',
-        'Delivered project progress and updates directly to internal stakeholders, aligning development with business needs.',
-        'Evaluated and selected tech stacks based on project requirements, balancing performance, scalability, and team capabilities.',
-        'Maintained and optimized legacy codebases, improving system stability, scalability, and long-term maintainability.'
+        'Led a 6-person team delivering ERP and POS systems for 100+ users handling 500+ daily transactions across retail sites.',
+        'Delivered BeOne BI (Laravel + React Native + PostgreSQL), cutting report generation time by ~50% via optimized SQL and async pipelines.',
+        'Built POS systems (Flutter, Bloc, SQLite) with offline-first capabilities, improving task completion rate by ~35%.',
+        'Refactored monolithic backends into microservices (Go + TypeScript), improving modular scalability.',
+        'Migrated infrastructure to Alibaba Cloud, achieving ~99.9% uptime and reducing deployment time from ~20 min to ~5 min.',
+        'Set up CI/CD (Jenkins + Docker) with automated tests, increasing deployment frequency by ~80%.',
+        'Mentored junior developers and led code reviews to improve productivity and code quality.'
       ],
       achievements: [
-        'Boosted POS user task efficiency by 35% through streamlined UI/UX flows and offline functionality.',
-        'Reduced report generation time in BeOne BI by over 50% with optimized SQL queries and asynchronous data processing.',
-        'Achieved 80% increase in deployment success rate through fully automated CI/CD and Docker integration.',
-        'Maintained 99.9% system uptime post-cloud migration to Alibaba Cloud with improved scaling and monitoring strategies.'
+        '~50% faster reporting in BeOne BI.',
+        '~35% improvement in POS task completion.',
+        '~80% increase in deployment frequency with CI/CD.',
+        '~99.9% uptime post-cloud migration.'
       ]
     },
     {
-      title: 'Software Developer',
-      company: 'PT. Sumber Inovasi Informatika',
+      title: 'Software Developer (Backend Focus)',
+      company: 'PT Agile Technica',
       location: 'Tangerang, Indonesia',
       period: 'Nov 2023 – Nov 2024',
       description: [
-        'Led backend development for two ERP platforms (Unirama & Central SPS) using Frappe and Python, covering modules such as HR, Helpdesk, LMS, Stock, and Accounting for 100+ daily users.',
-        'Developed and integrated RESTful APIs to ensure seamless data exchange between frontend and third-party services, reducing sync latency by 40%.',
-        'Optimized MariaDB queries and backend performance to significantly reduce response times across all modules.',
-        'Automated CI/CD pipelines and containerized applications using Docker, enabling consistent deployments across Frappe Cloud and AWS EC2 environments.',
-        'Contributed to system stability through rigorous unit testing and API testing, ensuring reliable feature releases with minimal downtime.'
+        'Maintained ERP systems (100+ users, 1,000+ daily transactions) within a small cross-functional team.',
+        'Enhanced ERP modules (HR, Helpdesk, LMS, Accounting) on Python Frappe, boosting query efficiency by ~45% via indexing, cron jobs, and queue refactor.',
+        'Automated deployments using Docker and Kubernetes on AWS, improving deployment success rate by ~80%.',
+        'Implemented task schedulers and scaling logic, reducing data sync delays from ~30s to ~10s during peak usage.',
+        'Set up backend observability dashboards, improving incident response time by ~60%.'
       ],
       achievements: [
-        'Reduced sync latency by 40% through API integration.',
-        'Significantly improved backend response times with query optimization.',
-        'Enabled consistent deployments via Docker and CI/CD automation.'
+        '~45% query efficiency improvements across ERP modules.',
+        '~80% deployment success rate with Docker/Kubernetes.',
+        'Data sync delay reduced from ~30s to ~10s.',
+        '~60% faster incident response via observability.'
       ]
     },
     {
       title: 'Technical Solution Architect',
-      company: 'PT. Mastersystem Infotama',
+      company: 'PT Mastersystem Infotama',
       location: 'Jakarta, Indonesia',
-      period: 'Jun 2023 - Sep 2023',
+      period: 'Jun 2023 – Sep 2023',
       description: [
-        'Designed and delivered an NLP-based solution for real-time sentiment analysis across multiple social media platforms, reducing customer feedback response time by 60% and identifying product issues faster.',
-        'Architected an internal face recognition system with third-party API integration, improving recognition accuracy by 45% even under significant facial changes.',
-        'Created detailed architecture diagrams, system specifications, and implementation plans to support solution delivery.',
-        'Collaborated with third-party vendors and internal engineering teams to troubleshoot and resolve technical issues during development and post-deployment phases.',
-        'Conducted manual testing on production-level web and mobile applications, and documented root cause analyses to accelerate defect resolution cycles.'
+        'Designed enterprise solutions for financial clients with a team of Cloud Engineers and PMs.',
+        'Architected facial-recognition attendance using AWS Rekognition and third-party OCR APIs, reducing manual validation effort by ~50%.',
+        'Built NLP-based social media sentiment analysis via AWS Comprehend for 10,000+ daily mentions, cutting manual review time by ~60%.',
+        'Delivered technical documentation, deployment diagrams, and validation reports for handover.',
+        'Integrated cloud services into client systems, improving detection accuracy and API stability.'
       ],
       achievements: [
-        'Reduced customer feedback response time by 60% with NLP solution.',
-        'Improved face recognition accuracy by 45% through API integration.',
-        'Accelerated defect resolution cycles with thorough testing and documentation.'
+        '~50% faster authentication with face recognition system.',
+        '~60% reduction in manual review time with NLP.',
+        'Improved detection accuracy and API stability.'
       ]
     },
     {
       title: 'Application Developer Intern',
-      company: 'PT Mayora Indah TBK',
+      company: 'PT Mayora Indah Tbk',
       location: 'Jakarta, Indonesia',
       period: 'Feb 2022 – Feb 2023',
       description: [
-        'Developed 7 web-based applications for the Finance and Tax division using Java Spring Boot, Vanilla JavaScript, Oracle SQL, HTML, and CSS to streamline daily operational workflows.',
-        'Designed and built a mobile-based Help Desk application using Flutter, Node.js, and PostgreSQL as part of a thesis project, enhancing internal support efficiency.',
-        'Collaborated with cross-functional teams to gather and analyze requirements, ensuring seamless system integration.',
-        'Troubleshot and debugged existing applications, improving performance by 50–70% and optimizing data processing through indexing (B-tree) and query tuning.',
-        'Increased backend responsiveness and data efficiency across financial systems through database optimization strategies.'
+        'Supported the Finance division (100+ users, up to 1,000 daily transactions) as a Full-Stack Developer.',
+        'Developed and maintained 7+ internal finance and tax apps using Java Spring Boot, JavaScript, Flutter, and MariaDB, integrated with SAP.',
+        'Optimized backend performance via B-Tree indexing and query refactoring, achieving ~70% faster response times.',
+        'Refactored frontend architecture and state management, introducing lazy loading and skeleton UI to reduce initial render time by ~35%.',
+        'Collaborated with stakeholders to test and deploy production releases.'
       ],
       achievements: [
-        'Streamlined daily workflows for Finance and Tax division with 7 new apps.',
-        'Enhanced internal support efficiency with mobile Help Desk app.',
-        'Improved application performance by up to 70% through optimization.'
+        'Built and maintained 7+ internal apps.',
+        '~70% faster backend responses via optimization.',
+        '~35% faster initial render with frontend refactor.'
       ]
     }
   ];
@@ -105,9 +103,15 @@ const ExperienceSection = () => {
   const education = [
     {
       degree: 'Bachelor of Computer Science',
-      school: 'Universitas Bina Nusantara',
-      period: '2019 - 2023',
-      gpa: 'GPA: 3.44/4.0'
+      school: 'Bina Nusantara University',
+      period: 'Sep 2019 – Apr 2023',
+      gpa: 'GPA: 3.44 / 4.00 — Graduated in 3.5 years; KMK activist; Internship at PT Mayora Indah Tbk'
+    },
+    {
+      degree: 'Full-Stack Web Development Bootcamp',
+      school: 'Binar Academy',
+      period: 'Mar 2021 – Oct 2021',
+      gpa: 'Rated “Very Good” (4.6/5) in Hard Skills'
     }
   ];
 
@@ -175,7 +179,7 @@ const ExperienceSection = () => {
             <div className="animate-fade-in">
               <h3 className="text-2xl font-bold mb-6 text-portfolio-text">Education</h3>
               {education.map((edu, index) => (
-                <div key={index} className="bg-portfolio-navy p-6 rounded-xl border border-portfolio-blue">
+                <div key={index} className="bg-portfolio-navy p-6 mb-10 rounded-xl border border-portfolio-blue">
                   <h4 className="text-lg font-bold text-portfolio-text mb-2">{edu.degree}</h4>
                   <p className="text-portfolio-accent mb-2">{edu.school}</p>
                   <div className="flex items-center gap-2 text-sm text-portfolio-muted mb-2">
