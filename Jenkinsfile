@@ -13,22 +13,22 @@ pipeline {
   }
 
   parameters {
-    choice(name: 'TARGET_ENV', choices: ['auto', 'staging', 'production'], description: 'Deployment target')
-    string(name: 'APP_NAME', description: 'Container name (e.g. my-portfolio)')
-    string(name: 'IMAGE_NAME', description: 'Docker image:tag to build/run (e.g. my-portfolio:latest or username/my-portfolio:latest)')
-    string(name: 'HOST_PORT', description: 'Host port to expose (e.g. 32000)')
-    string(name: 'CONTAINER_PORT', description: 'Container port (e.g. 80)')
-    string(name: 'ENV_FILE', description: 'Optional: absolute path to .env on host; leave blank to skip')
-    password(name: 'ADMIN_PASSWORD', defaultValue: 'AdminJAP', description: 'Admin password (plaintext). Will be baked as VITE_ADMIN_PASSWORD_HASH.')
+    choice(name: 'TARGET_ENV_PORTFOLIO', choices: ['auto', 'staging', 'production'], description: 'Deployment target for portfolio')
+    string(name: 'APP_NAME_PORTFOLIO', description: 'Container name (e.g. my-portfolio)')
+    string(name: 'IMAGE_NAME_PORTFOLIO', description: 'Docker image:tag to build/run (e.g. my-portfolio:latest or username/my-portfolio:latest)')
+    string(name: 'HOST_PORT_PORTFOLIO', description: 'Host port to expose (e.g. 32000)')
+    string(name: 'CONTAINER_PORT_PORTFOLIO', description: 'Container port (e.g. 80)')
+    string(name: 'ENV_FILE_PORTFOLIO', description: 'Optional: absolute path to .env on host; leave blank to skip')
+    password(name: 'ADMIN_PASSWORD_PORTFOLIO', description: 'Admin password SHA-256 hash (64 hex). Passed as VITE_ADMIN_PASSWORD_HASH.')
   }
 
   environment {
-    APP_NAME = "${params.APP_NAME}"
-    IMAGE_NAME = "${params.IMAGE_NAME}"
-    HOST_PORT = "${params.HOST_PORT}"
-    CONTAINER_PORT = "${params.CONTAINER_PORT}"
-    ENV_FILE = "${params.ENV_FILE}"
-    ADMIN_PASSWORD = "${params.ADMIN_PASSWORD}"
+    APP_NAME_PORTFOLIO = "${params.APP_NAME_PORTFOLIO}"
+    IMAGE_NAME_PORTFOLIO = "${params.IMAGE_NAME_PORTFOLIO}"
+    HOST_PORT_PORTFOLIO = "${params.HOST_PORT_PORTFOLIO}"
+    CONTAINER_PORT_PORTFOLIO = "${params.CONTAINER_PORT_PORTFOLIO}"
+    ENV_FILE_PORTFOLIO = "${params.ENV_FILE_PORTFOLIO}"
+    ADMIN_PASSWORD_PORTFOLIO = "${params.ADMIN_PASSWORD_PORTFOLIO}"
   }
 
   stages {
@@ -37,13 +37,19 @@ pipeline {
         script {
           sh '''
             set -eu
-            [ -n "${APP_NAME}" ] || { echo "APP_NAME is required" >&2; exit 1; }
-            [ -n "${IMAGE_NAME}" ] || { echo "IMAGE_NAME is required" >&2; exit 1; }
-            [ -n "${HOST_PORT}" ] || { echo "HOST_PORT is required" >&2; exit 1; }
-            [ -n "${CONTAINER_PORT}" ] || { echo "CONTAINER_PORT is required" >&2; exit 1; }
-            if [ -n "${ENV_FILE}" ] && [ ! -f "${ENV_FILE}" ]; then
-              echo "ENV_FILE not found: ${ENV_FILE}" >&2
+            [ -n "${APP_NAME_PORTFOLIO}" ] || { echo "APP_NAME_PORTFOLIO is required" >&2; exit 1; }
+            [ -n "${IMAGE_NAME_PORTFOLIO}" ] || { echo "IMAGE_NAME_PORTFOLIO is required" >&2; exit 1; }
+            [ -n "${HOST_PORT_PORTFOLIO}" ] || { echo "HOST_PORT_PORTFOLIO is required" >&2; exit 1; }
+            [ -n "${CONTAINER_PORT_PORTFOLIO}" ] || { echo "CONTAINER_PORT_PORTFOLIO is required" >&2; exit 1; }
+            if [ -n "${ENV_FILE_PORTFOLIO}" ] && [ ! -f "${ENV_FILE_PORTFOLIO}" ]; then
+              echo "ENV_FILE_PORTFOLIO not found: ${ENV_FILE_PORTFOLIO}" >&2
               exit 1
+            fi
+            if [ -n "${ADMIN_PASSWORD_PORTFOLIO}" ]; then
+              case "${ADMIN_PASSWORD_PORTFOLIO}" in
+                (*[!0-9A-Fa-f]*) echo "ADMIN_PASSWORD_PORTFOLIO must be SHA-256 hex (64 chars)" >&2; exit 1 ;;
+                (*) [ ${#ADMIN_PASSWORD_PORTFOLIO} -eq 64 ] || { echo "ADMIN_PASSWORD_PORTFOLIO must be 64 hex chars" >&2; exit 1; } ;;
+              esac
             fi
           '''
         }
@@ -82,23 +88,23 @@ pipeline {
 
     stage('Build Docker image') {
       steps {
-        sh 'docker build --build-arg VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD} -t ${IMAGE_NAME} .'
+        sh 'docker build --build-arg VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO} -t ${IMAGE_NAME_PORTFOLIO} .'
       }
     }
 
     stage('Deploy locally') {
       steps {
         script {
-          echo "🚀 Deploying ${IMAGE_NAME} on this server..."
-          def envArg = params.ENV_FILE?.trim() ? "--env-file ${params.ENV_FILE}" : ""
+          echo "🚀 Deploying ${IMAGE_NAME_PORTFOLIO} on this server..."
+          def envArg = params.ENV_FILE_PORTFOLIO?.trim() ? "--env-file ${params.ENV_FILE_PORTFOLIO}" : ""
           sh """
-            docker rm -f ${APP_NAME} || true
+            docker rm -f ${APP_NAME_PORTFOLIO} || true
             docker run -d \
-              -p ${HOST_PORT}:${CONTAINER_PORT} \
-              --name ${APP_NAME} \
+              -p ${HOST_PORT_PORTFOLIO}:${CONTAINER_PORT_PORTFOLIO} \
+              --name ${APP_NAME_PORTFOLIO} \
               --restart unless-stopped \
               ${envArg} \
-              ${IMAGE_NAME}
+              ${IMAGE_NAME_PORTFOLIO}
           """
         }
       }
