@@ -7,6 +7,8 @@ COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
 # Build
+ARG VITE_ADMIN_PASSWORD_HASH
+ENV VITE_ADMIN_PASSWORD_HASH=${VITE_ADMIN_PASSWORD_HASH}
 COPY . ./
 RUN npm run build
 
@@ -24,4 +26,3 @@ EXPOSE 80
 HEALTHCHECK CMD wget --spider -q http://localhost/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
-

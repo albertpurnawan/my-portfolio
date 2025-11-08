@@ -19,6 +19,7 @@ pipeline {
     string(name: 'HOST_PORT', description: 'Host port to expose (e.g. 32000)')
     string(name: 'CONTAINER_PORT', description: 'Container port (e.g. 80)')
     string(name: 'ENV_FILE', description: 'Optional: absolute path to .env on host; leave blank to skip')
+    password(name: 'ADMIN_PASSWORD', defaultValue: 'AdminJAP', description: 'Admin password (plaintext). Will be baked as VITE_ADMIN_PASSWORD_HASH.')
   }
 
   environment {
@@ -27,6 +28,7 @@ pipeline {
     HOST_PORT = "${params.HOST_PORT}"
     CONTAINER_PORT = "${params.CONTAINER_PORT}"
     ENV_FILE = "${params.ENV_FILE}"
+    ADMIN_PASSWORD = "${params.ADMIN_PASSWORD}"
   }
 
   stages {
@@ -80,7 +82,7 @@ pipeline {
 
     stage('Build Docker image') {
       steps {
-        sh 'docker build -t ${IMAGE_NAME} .'
+        sh 'docker build --build-arg VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD} -t ${IMAGE_NAME} .'
       }
     }
 
