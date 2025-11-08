@@ -12,21 +12,21 @@ pipeline {
     ansiColor('xterm')
   }
   parameters {
-    string(name: 'REGISTRY_REPO', defaultValue: 'my-portfolio', description: 'Docker registry repo, e.g. username/my-portfolio')
-    string(name: 'DOCKER_CREDENTIALS_ID', defaultValue: 'dockerhub-credentials', description: 'Jenkins credentials ID for Docker registry')
+    string(name: 'REGISTRY_REPO', description: 'Docker registry repo, e.g. username/my-portfolio')
+    string(name: 'DOCKER_CREDENTIALS_ID', description: 'Jenkins credentials ID for Docker registry')
     choice(name: 'TARGET_ENV', choices: ['auto', 'staging', 'production', 'none'], description: 'Deployment environment selection')
     // Staging deployment
-    string(name: 'DEPLOY_HOST_STAGING', defaultValue: '', description: 'Staging host (SSH reachable)')
-    string(name: 'STAGING_DOCKER_PORT', defaultValue: '8081', description: 'Staging host port (maps to container 80)')
+    string(name: 'DEPLOY_HOST_STAGING', description: 'Staging host (SSH reachable)')
+    string(name: 'STAGING_DOCKER_PORT', description: 'Staging host port (maps to container 80)')
     // Production deployment
-    string(name: 'DEPLOY_HOST_PROD', defaultValue: '', description: 'Production host (SSH reachable)')
-    string(name: 'PROD_DOCKER_PORT', defaultValue: '8080', description: 'Production host port (maps to container 80)')
+    string(name: 'DEPLOY_HOST_PROD', description: 'Production host (SSH reachable)')
+    string(name: 'PROD_DOCKER_PORT', description: 'Production host port (maps to container 80)')
     // Common SSH
-    string(name: 'DEPLOY_USER', defaultValue: 'root', description: 'SSH user on target host(s)')
-    string(name: 'SSH_CREDENTIALS_ID', defaultValue: 'deploy-ssh-key', description: 'Jenkins SSH credentials ID for deployment')
+    string(name: 'DEPLOY_USER', description: 'SSH user on target host(s)')
+    string(name: 'SSH_CREDENTIALS_ID', description: 'Jenkins SSH credentials ID for deployment')
   }
   environment {
-    IMAGE = "${REGISTRY_REPO}"
+    IMAGE = "${params.REGISTRY_REPO}"
     COMMIT = "${env.GIT_COMMIT}"
   }
   stages {
@@ -97,10 +97,10 @@ pipeline {
       steps {
         sshagent(credentials: [params.SSH_CREDENTIALS_ID]) {
           sh '''
-            ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST_STAGING} \
+            ssh -o StrictHostKeyChecking=no ${params.DEPLOY_USER}@${params.DEPLOY_HOST_STAGING} \
               "docker pull ${IMAGE}:staging && \
                (docker rm -f my-portfolio-staging || true) && \
-               docker run -d --name my-portfolio-staging --restart unless-stopped -p ${STAGING_DOCKER_PORT}:80 ${IMAGE}:staging"
+               docker run -d --name my-portfolio-staging --restart unless-stopped -p ${params.STAGING_DOCKER_PORT}:80 ${IMAGE}:staging"
           '''
         }
       }
@@ -119,10 +119,10 @@ pipeline {
       steps {
         sshagent(credentials: [params.SSH_CREDENTIALS_ID]) {
           sh '''
-            ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST_PROD} \
+            ssh -o StrictHostKeyChecking=no ${params.DEPLOY_USER}@${params.DEPLOY_HOST_PROD} \
               "docker pull ${IMAGE}:latest && \
                (docker rm -f my-portfolio || true) && \
-               docker run -d --name my-portfolio --restart unless-stopped -p ${PROD_DOCKER_PORT}:80 ${IMAGE}:latest"
+               docker run -d --name my-portfolio --restart unless-stopped -p ${params.PROD_DOCKER_PORT}:80 ${IMAGE}:latest"
           '''
         }
       }
