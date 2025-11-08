@@ -115,7 +115,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 id="title"
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
-                className="text-black"
+                className="text-black placeholder-black"
                 required
               />
             </div>
@@ -143,7 +143,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               rows={3}
-              className="text-black"
+              className="text-black placeholder-black"
               required
             />
           </div>
@@ -155,7 +155,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
               type="file"
               accept="image/*"
               onChange={(e) => handleImageFile(e.target.files?.[0])}
-              className="text-black"
+              className="text-black placeholder-black"
               required={!project && !formData.image}
             />
             {formData.image && (
@@ -172,7 +172,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
               value={formData.tech}
               onChange={(e) => handleChange('tech', e.target.value)}
               placeholder="React, Node.js, MongoDB"
-              className="text-black"
+              className="text-black placeholder-black"
               required
             />
           </div>
@@ -184,7 +184,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 id="date"
                 value={formData.date}
                 onChange={(e) => handleChange('date', e.target.value)}
-                className="text-black"
+                className="text-black placeholder-black"
                 required
               />
             </div>
@@ -196,7 +196,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.github}
                 onChange={(e) => handleChange('github', e.target.value)}
                 placeholder="https://github.com/albertpurnawan?tab=repositories"
-                className="text-black"
+                className="text-black placeholder-black"
               />
             </div>
 
@@ -207,7 +207,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.demo}
                 onChange={(e) => handleChange('demo', e.target.value)}
                 placeholder="https://demo.com"
-                className="text-black"
+                className="text-black placeholder-black"
               />
             </div>
             <div>
@@ -217,7 +217,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.embedUrl}
                 onChange={(e) => handleChange('embedUrl', e.target.value)}
                 placeholder="https://your-app.example.com"
-                className="text-black"
+                className="text-black placeholder-black"
               />
             </div>
           </div>

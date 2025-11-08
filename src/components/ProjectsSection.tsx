@@ -88,7 +88,7 @@ const ProjectsSection = () => {
                   ))}
                 </div>
 
-                <div className="flex gap-4 items-center">
+                <div className="flex flex-wrap gap-4 items-center">
                   <button
                     onClick={() => setPreviewProject(project)}
                     className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
