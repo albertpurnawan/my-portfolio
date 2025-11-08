@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'node:20'
-      args '-v /var/run/docker.sock:/var/run/docker.sock'
+      args '-u 0:0 -v /var/run/docker.sock:/var/run/docker.sock'
       reuseNode true
     }
   }
@@ -27,13 +27,7 @@ pipeline {
   stages {
     stage('Prepare tools') {
       steps {
-        sh '''
-          set -euxo pipefail
-          apt-get update
-          apt-get install -y --no-install-recommends docker.io ca-certificates
-          docker version
-          node -v && npm -v
-        '''
+        sh 'bash -lc "set -euxo pipefail; apt-get update; apt-get install -y --no-install-recommends docker.io ca-certificates; docker version; node -v && npm -v"'
       }
     }
 
