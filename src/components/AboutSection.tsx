@@ -6,7 +6,7 @@ const AboutSection = () => {
     {
       icon: <Code size={24} />,
       title: 'Frontend Development',
-      description: 'React, Vue.js, TypeScript, Tailwind CSS',
+      description: 'React, Vue.js, Next.js TypeScript, Tailwind CSS',
       projects: '20+ Projects'
     },
     {
@@ -80,9 +80,9 @@ const AboutSection = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16 animate-fade-in">
           {[
-            { number: '20+', label: 'Projects Completed' },
+            { number: '10+', label: 'Projects Completed' },
             { number: '3+', label: 'Years Experience' },
-            { number: '5+', label: 'Happy Clients' },
+            { number: '4+', label: 'Happy Clients' },
             { number: '10+', label: 'Technologies' }
           ].map((stat, index) => (
             <div key={index} className="text-center">
