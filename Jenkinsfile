@@ -2,133 +2,100 @@ pipeline {
   agent {
     docker {
       image 'node:20'
-      // Mount host Docker socket to build and run Docker from within the agent container
       args '-v /var/run/docker.sock:/var/run/docker.sock'
       reuseNode true
     }
   }
+
   options {
     timestamps()
     ansiColor('xterm')
   }
+
   parameters {
-    string(name: 'REGISTRY_REPO', description: 'Docker registry repo, e.g. username/my-portfolio')
-    string(name: 'DOCKER_CREDENTIALS_ID', description: 'Jenkins credentials ID for Docker registry')
-    choice(name: 'TARGET_ENV', choices: ['auto', 'staging', 'production', 'none'], description: 'Deployment environment selection')
-    // Staging deployment
-    string(name: 'DEPLOY_HOST_STAGING', description: 'Staging host (SSH reachable)')
-    string(name: 'STAGING_DOCKER_PORT', description: 'Staging host port (maps to container 80)')
-    // Production deployment
-    string(name: 'DEPLOY_HOST_PROD', description: 'Production host (SSH reachable)')
-    string(name: 'PROD_DOCKER_PORT', description: 'Production host port (maps to container 80)')
-    // Common SSH
-    string(name: 'DEPLOY_USER', description: 'SSH user on target host(s)')
-    string(name: 'SSH_CREDENTIALS_ID', description: 'Jenkins SSH credentials ID for deployment')
+    choice(name: 'TARGET_ENV', choices: ['auto', 'staging', 'production'], description: 'Deployment target')
   }
+
   environment {
-    IMAGE = "${params.REGISTRY_REPO}"
-    COMMIT = "${env.GIT_COMMIT}"
+    APP_NAME = "my-portfolio"
+    IMAGE_NAME = "my-portfolio:latest"
+    HOST_PORT = "32000"
+    CONTAINER_PORT = "80"
+    PROJECT_PATH = "/srv/apps/my-portfolio"
   }
+
   stages {
     stage('Prepare tools') {
       steps {
         sh '''
           set -euxo pipefail
           apt-get update
-          apt-get install -y --no-install-recommends docker.io openssh-client ca-certificates
+          apt-get install -y --no-install-recommends docker.io ca-certificates
           docker version
-          ssh -V || true
           node -v && npm -v
         '''
       }
     }
+
     stage('Checkout') {
       steps {
         checkout scm
         script {
-          env.SHORT_SHA = env.GIT_COMMIT ? env.GIT_COMMIT.take(7) : 'dev'
           env.BRANCH = env.BRANCH_NAME ?: sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+          env.SHORT_SHA = env.GIT_COMMIT.take(7)
           echo "Branch: ${env.BRANCH}, Commit: ${env.SHORT_SHA}"
         }
       }
     }
-    stage('Install deps') {
+
+    stage('Install dependencies') {
       steps {
         sh 'npm ci --no-audit --no-fund'
       }
     }
+
     stage('Build app') {
       steps {
         sh 'npm run build'
       }
     }
+
     stage('Build Docker image') {
       steps {
+        sh 'docker build -t ${IMAGE_NAME} .'
+      }
+    }
+
+    stage('Deploy locally') {
+      steps {
         script {
-          // Decide environment tag
-          def envTag = 'dev'
-          if (params.TARGET_ENV == 'staging' || (params.TARGET_ENV == 'auto' && env.BRANCH == 'develop')) envTag = 'staging'
-          if (params.TARGET_ENV == 'production' || (params.TARGET_ENV == 'auto' && env.BRANCH == 'main')) envTag = 'latest'
-          env.ENV_TAG = envTag
-        }
-        sh 'docker build -t $IMAGE:${COMMIT} -t $IMAGE:${SHORT_SHA} -t $IMAGE:${ENV_TAG} .'
-      }
-    }
-    stage('Push Docker image') {
-      when { expression { return params.REGISTRY_REPO?.trim() } }
-      steps {
-        withCredentials([usernamePassword(credentialsId: params.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-          sh 'docker push $IMAGE:${COMMIT} && docker push $IMAGE:${SHORT_SHA} && docker push $IMAGE:${ENV_TAG}'
-        }
-      }
-    }
-    stage('Deploy Staging') {
-      when {
-        allOf {
-          anyOf {
-            expression { return params.TARGET_ENV == 'staging' }
-            expression { return (params.TARGET_ENV == 'auto' && (env.BRANCH == 'develop' || env.ENV_TAG == 'staging')) }
-          }
-          expression { return params.DEPLOY_HOST_STAGING?.trim() }
-          expression { return params.SSH_CREDENTIALS_ID?.trim() }
-        }
-      }
-      steps {
-        sshagent(credentials: [params.SSH_CREDENTIALS_ID]) {
+          echo "🚀 Deploying ${IMAGE_NAME} on this server..."
           sh '''
-            ssh -o StrictHostKeyChecking=no ${params.DEPLOY_USER}@${params.DEPLOY_HOST_STAGING} \
-              "docker pull ${IMAGE}:staging && \
-               (docker rm -f my-portfolio-staging || true) && \
-               docker run -d --name my-portfolio-staging --restart unless-stopped -p ${params.STAGING_DOCKER_PORT}:80 ${IMAGE}:staging"
+            docker rm -f ${APP_NAME} || true
+            docker run -d \
+              -p ${HOST_PORT}:${CONTAINER_PORT} \
+              --name ${APP_NAME} \
+              --restart unless-stopped \
+              --env-file ${PROJECT_PATH}/.env \
+              ${IMAGE_NAME}
           '''
         }
       }
     }
-    stage('Deploy Production') {
-      when {
-        allOf {
-          anyOf {
-            expression { return params.TARGET_ENV == 'production' }
-            expression { return (params.TARGET_ENV == 'auto' && (env.BRANCH == 'main' || env.ENV_TAG == 'latest')) }
-          }
-          expression { return params.DEPLOY_HOST_PROD?.trim() }
-          expression { return params.SSH_CREDENTIALS_ID?.trim() }
-        }
-      }
+
+    stage('Cleanup old images') {
       steps {
-        sshagent(credentials: [params.SSH_CREDENTIALS_ID]) {
-          sh '''
-            ssh -o StrictHostKeyChecking=no ${params.DEPLOY_USER}@${params.DEPLOY_HOST_PROD} \
-              "docker pull ${IMAGE}:latest && \
-               (docker rm -f my-portfolio || true) && \
-               docker run -d --name my-portfolio --restart unless-stopped -p ${params.PROD_DOCKER_PORT}:80 ${IMAGE}:latest"
-          '''
-        }
+        sh 'docker image prune -f || true'
       }
     }
   }
+
   post {
-    always { echo 'Pipeline finished.' }
+    success {
+      echo '✅ Deployment successful!'
+    }
+    failure {
+      echo '❌ Deployment failed!'
+    }
   }
 }
