@@ -85,6 +85,16 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleImageFile = (file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      handleChange('image', result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -105,6 +115,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 id="title"
                 value={formData.title}
                 onChange={(e) => handleChange('title', e.target.value)}
+                className="text-black"
                 required
               />
             </div>
@@ -112,7 +123,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
             <div>
               <Label htmlFor="category">Kategori</Label>
               <Select value={formData.category} onValueChange={(value) => handleChange('category', value)}>
-                <SelectTrigger>
+                <SelectTrigger className="text-black">
                   <SelectValue placeholder="Pilih kategori" />
                 </SelectTrigger>
                 <SelectContent>
@@ -132,19 +143,26 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               rows={3}
+              className="text-black"
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="image">URL Gambar</Label>
+            <Label htmlFor="image">Upload Gambar</Label>
             <Input
               id="image"
-              value={formData.image}
-              onChange={(e) => handleChange('image', e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              required
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageFile(e.target.files?.[0])}
+              className="text-black"
+              required={!project && !formData.image}
             />
+            {formData.image && (
+              <div className="mt-2">
+                <img src={formData.image} alt="Preview" className="w-full h-40 object-cover rounded-md border" />
+              </div>
+            )}
           </div>
 
           <div>
@@ -154,6 +172,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
               value={formData.tech}
               onChange={(e) => handleChange('tech', e.target.value)}
               placeholder="React, Node.js, MongoDB"
+              className="text-black"
               required
             />
           </div>
@@ -165,6 +184,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 id="date"
                 value={formData.date}
                 onChange={(e) => handleChange('date', e.target.value)}
+                className="text-black"
                 required
               />
             </div>
@@ -176,6 +196,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.github}
                 onChange={(e) => handleChange('github', e.target.value)}
                 placeholder="https://github.com/albertpurnawan?tab=repositories"
+                className="text-black"
               />
             </div>
 
@@ -186,6 +207,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.demo}
                 onChange={(e) => handleChange('demo', e.target.value)}
                 placeholder="https://demo.com"
+                className="text-black"
               />
             </div>
             <div>
@@ -195,6 +217,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 value={formData.embedUrl}
                 onChange={(e) => handleChange('embedUrl', e.target.value)}
                 placeholder="https://your-app.example.com"
+                className="text-black"
               />
             </div>
           </div>

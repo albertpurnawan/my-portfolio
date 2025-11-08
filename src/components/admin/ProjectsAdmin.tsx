@@ -52,10 +52,10 @@ const ProjectsAdmin = () => {
             </div>
             <CardHeader>
               <CardTitle className="text-lg">{project.title}</CardTitle>
-              <p className="text-sm text-gray-600">{project.category}</p>
+              <p className="text-sm text-black">{project.category}</p>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+              <p className="text-sm text-black mb-4 line-clamp-2">
                 {project.description}
               </p>
               <div className="flex items-center space-x-2">
