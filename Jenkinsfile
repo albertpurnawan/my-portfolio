@@ -20,6 +20,7 @@ pipeline {
     string(name: 'CONTAINER_PORT_PORTFOLIO', description: 'Container port (e.g. 80)')
     string(name: 'ENV_FILE_PORTFOLIO', description: 'Optional: absolute path to .env on host; leave blank to skip')
     password(name: 'ADMIN_PASSWORD_PORTFOLIO', description: 'Admin password SHA-256 hash (64 hex). Passed as VITE_ADMIN_PASSWORD_HASH.')
+    string(name: 'ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO', defaultValue: '', description: 'Optional: Jenkins Secret Text ID containing SHA-256 hash')
   }
 
   environment {
@@ -32,15 +33,37 @@ pipeline {
   }
 
   stages {
+    stage('Resolve config') {
+      steps {
+        script {
+          def pick = { p, e ->
+            def ps = (p == null) ? '' : p.toString().trim()
+            def es = (e == null) ? '' : e.toString().trim()
+            return ps ? ps : es
+          }
+          env.APP_NAME_PORTFOLIO = pick(params.APP_NAME_PORTFOLIO, env.APP_NAME_PORTFOLIO)
+          env.IMAGE_NAME_PORTFOLIO = pick(params.IMAGE_NAME_PORTFOLIO, env.IMAGE_NAME_PORTFOLIO)
+          env.HOST_PORT_PORTFOLIO = pick(params.HOST_PORT_PORTFOLIO, env.HOST_PORT_PORTFOLIO)
+          env.CONTAINER_PORT_PORTFOLIO = pick(params.CONTAINER_PORT_PORTFOLIO, env.CONTAINER_PORT_PORTFOLIO)
+          env.ENV_FILE_PORTFOLIO = pick(params.ENV_FILE_PORTFOLIO, env.ENV_FILE_PORTFOLIO)
+          env.ADMIN_PASSWORD_PORTFOLIO = pick(params.ADMIN_PASSWORD_PORTFOLIO, env.ADMIN_PASSWORD_PORTFOLIO)
+          if (!env.ADMIN_PASSWORD_PORTFOLIO?.trim() && params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO?.trim()) {
+            withCredentials([string(credentialsId: params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO, variable: 'ADMIN_HASH_SECRET')]) {
+              env.ADMIN_PASSWORD_PORTFOLIO = ADMIN_HASH_SECRET
+            }
+          }
+        }
+      }
+    }
     stage('Validate params') {
       steps {
         script {
           sh '''
             set -eu
-            [ -n "${APP_NAME_PORTFOLIO}" ] || { echo "APP_NAME_PORTFOLIO is required" >&2; exit 1; }
-            [ -n "${IMAGE_NAME_PORTFOLIO}" ] || { echo "IMAGE_NAME_PORTFOLIO is required" >&2; exit 1; }
-            [ -n "${HOST_PORT_PORTFOLIO}" ] || { echo "HOST_PORT_PORTFOLIO is required" >&2; exit 1; }
-            [ -n "${CONTAINER_PORT_PORTFOLIO}" ] || { echo "CONTAINER_PORT_PORTFOLIO is required" >&2; exit 1; }
+            [ -n "${APP_NAME_PORTFOLIO}" ] || { echo "APP_NAME_PORTFOLIO is required (param or env)" >&2; exit 1; }
+            [ -n "${IMAGE_NAME_PORTFOLIO}" ] || { echo "IMAGE_NAME_PORTFOLIO is required (param or env)" >&2; exit 1; }
+            [ -n "${HOST_PORT_PORTFOLIO}" ] || { echo "HOST_PORT_PORTFOLIO is required (param or env)" >&2; exit 1; }
+            [ -n "${CONTAINER_PORT_PORTFOLIO}" ] || { echo "CONTAINER_PORT_PORTFOLIO is required (param or env)" >&2; exit 1; }
             if [ -n "${ENV_FILE_PORTFOLIO}" ] && [ ! -f "${ENV_FILE_PORTFOLIO}" ]; then
               echo "ENV_FILE_PORTFOLIO not found: ${ENV_FILE_PORTFOLIO}" >&2
               exit 1
@@ -96,7 +119,7 @@ pipeline {
       steps {
         script {
           echo "🚀 Deploying ${IMAGE_NAME_PORTFOLIO} on this server..."
-          def envArg = params.ENV_FILE_PORTFOLIO?.trim() ? "--env-file ${params.ENV_FILE_PORTFOLIO}" : ""
+          def envArg = env.ENV_FILE_PORTFOLIO?.trim() ? "--env-file ${env.ENV_FILE_PORTFOLIO}" : ""
           sh """
             docker rm -f ${APP_NAME_PORTFOLIO} || true
             docker run -d \
