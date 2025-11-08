@@ -12,14 +12,32 @@ pipeline {
     ansiColor('xterm')
   }
 
-  // No parameters: values are taken from Jenkins server env.
+  parameters {
+    string(name: 'APP_NAME_PORTFOLIO', description: 'Container name (e.g. my-portfolio)')
+    string(name: 'IMAGE_NAME_PORTFOLIO', description: 'Docker image:tag to build/run (e.g. my-portfolio:latest or username/my-portfolio:latest)')
+    string(name: 'HOST_PORT_PORTFOLIO', description: 'Host port to expose (e.g. 32000)')
+    string(name: 'CONTAINER_PORT_PORTFOLIO', description: 'Container port (e.g. 80)')
+    string(name: 'ENV_FILE_PORTFOLIO', defaultValue: '', description: 'Optional: absolute path to .env on host; leave blank to skip')
+    password(name: 'ADMIN_PASSWORD_PORTFOLIO', defaultValue: '', description: 'Admin password SHA-256 hash (64 hex). Passed as VITE_ADMIN_PASSWORD_HASH.')
+    string(name: 'ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO', defaultValue: '', description: 'Optional: Jenkins Secret Text ID containing SHA-256 hash')
+  }
+
+  environment {
+    APP_NAME_PORTFOLIO = "${params.APP_NAME_PORTFOLIO}"
+    IMAGE_NAME_PORTFOLIO = "${params.IMAGE_NAME_PORTFOLIO}"
+    HOST_PORT_PORTFOLIO = "${params.HOST_PORT_PORTFOLIO}"
+    CONTAINER_PORT_PORTFOLIO = "${params.CONTAINER_PORT_PORTFOLIO}"
+    ENV_FILE_PORTFOLIO = "${params.ENV_FILE_PORTFOLIO}"
+    ADMIN_PASSWORD_PORTFOLIO = "${params.ADMIN_PASSWORD_PORTFOLIO}"
+    ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO = "${params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO}"
+  }
 
   stages {
     stage('Resolve config') {
       steps {
         script {
-          if (!env.ADMIN_PASSWORD_PORTFOLIO?.trim() && env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO?.trim()) {
-            withCredentials([string(credentialsId: env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO, variable: 'ADMIN_HASH_SECRET')]) {
+          if (!env.ADMIN_PASSWORD_PORTFOLIO?.trim() && params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO?.trim()) {
+            withCredentials([string(credentialsId: params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO, variable: 'ADMIN_HASH_SECRET')]) {
               env.ADMIN_PASSWORD_PORTFOLIO = ADMIN_HASH_SECRET
             }
           }
