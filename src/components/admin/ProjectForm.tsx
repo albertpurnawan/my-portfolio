@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useProjectStore } from '../../stores/projectStore';
 
@@ -18,6 +19,9 @@ interface Project {
   date: string;
   github: string;
   demo: string;
+  showGithub?: boolean;
+  showDemo?: boolean;
+  embedUrl?: string;
 }
 
 interface ProjectFormProps {
@@ -35,7 +39,10 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
     tech: '',
     date: new Date().getFullYear().toString(),
     github: '',
-    demo: ''
+    demo: '',
+    showGithub: true,
+    showDemo: true,
+    embedUrl: '',
   });
 
   useEffect(() => {
@@ -48,7 +55,10 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
         tech: project.tech.join(', '),
         date: project.date,
         github: project.github,
-        demo: project.demo
+        demo: project.demo,
+        showGithub: project.showGithub ?? true,
+        showDemo: project.showDemo ?? true,
+        embedUrl: project.embedUrl || '',
       });
     }
   }, [project]);
@@ -71,7 +81,7 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
     onClose();
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -178,6 +188,15 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
                 placeholder="https://demo.com"
               />
             </div>
+            <div>
+              <Label htmlFor="embedUrl">URL Embed (optional)</Label>
+              <Input
+                id="embedUrl"
+                value={formData.embedUrl}
+                onChange={(e) => handleChange('embedUrl', e.target.value)}
+                placeholder="https://your-app.example.com"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end space-x-4 pt-4">
@@ -189,6 +208,28 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
             </Button>
           </div>
         </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="flex items-center justify-between border rounded-md p-3">
+            <div>
+              <Label>Tampilkan Link GitHub</Label>
+              <p className="text-sm text-gray-500">Aktif/nonaktifkan tombol kode.</p>
+            </div>
+            <Switch
+              checked={formData.showGithub}
+              onCheckedChange={(val) => handleChange('showGithub', val)}
+            />
+          </div>
+          <div className="flex items-center justify-between border rounded-md p-3">
+            <div>
+              <Label>Tampilkan Link Demo</Label>
+              <p className="text-sm text-gray-500">Aktif/nonaktifkan tombol demo.</p>
+            </div>
+            <Switch
+              checked={formData.showDemo}
+              onCheckedChange={(val) => handleChange('showDemo', val)}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

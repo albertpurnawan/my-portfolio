@@ -2,6 +2,7 @@
 import { ArrowLeft, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/stores/authStore';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">Admin Panel</span>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => useAuthStore.getState().logout()}>
                 <LogOut size={16} className="mr-2" />
                 Logout
               </Button>

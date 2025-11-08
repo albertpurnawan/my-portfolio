@@ -45,7 +45,7 @@ const ExperienceAdmin = () => {
                 <div>
                   <CardTitle className="text-lg">{experience.position}</CardTitle>
                   <p className="text-blue-600 font-medium">{experience.company}</p>
-                  <p className="text-sm text-gray-600">{experience.period}</p>
+                  <p className="text-sm text-gray-600">{experience.period} · {experience.location}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Button

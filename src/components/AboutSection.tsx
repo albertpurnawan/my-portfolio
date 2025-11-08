@@ -1,33 +1,19 @@
 
-import { Code, Database, Globe, Smartphone } from 'lucide-react';
+import { Code } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { useAboutStore } from '@/stores/aboutStore';
 
 const AboutSection = () => {
-  const skills = [
-    {
-      icon: <Code size={24} />,
-      title: 'Frontend Development',
-      description: 'React, Vue.js, Next.js TypeScript, Tailwind CSS',
-      projects: '20+ Projects'
-    },
-    {
-      icon: <Database size={24} />,
-      title: 'Backend Development', 
-      description: 'Node.js, Express, Python, PHP, PostgreSQL, MongoDB',
-      projects: '20+ Projects'
-    },
-    {
-      icon: <Globe size={24} />,
-      title: 'Full Stack Solutions',
-      description: 'End-to-end web application development',
-      projects: '20+ Projects'
-    },
-    {
-      icon: <Smartphone size={24} />,
-      title: 'Mobile Development',
-      description: 'React Native, Flutter',
-      projects: '5+ Projects'
+  const { skills, stats } = useAboutStore();
+  const renderIcon = (name?: string) => {
+    if (!name) return <Code size={24} />;
+    const IconComp = (LucideIcons as unknown)[name];
+    try {
+      return IconComp ? <IconComp size={24} /> : <Code size={24} />;
+    } catch {
+      return <Code size={24} />;
     }
-  ];
+  };
 
   return (
     <section id="about" className="py-20 bg-portfolio-navy/50">
@@ -60,9 +46,7 @@ const AboutSection = () => {
                 key={index}
                 className="bg-portfolio-dark p-6 rounded-xl border border-portfolio-blue hover:border-portfolio-accent transition-colors card-hover"
               >
-                <div className="text-portfolio-accent mb-4">
-                  {skill.icon}
-                </div>
+                <div className="text-portfolio-accent mb-4">{renderIcon(skill.icon)}</div>
                 <h3 className="text-lg font-semibold mb-2 text-portfolio-text">
                   {skill.title}
                 </h3>
@@ -79,12 +63,7 @@ const AboutSection = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16 animate-fade-in">
-          {[
-            { number: '10+', label: 'Projects Completed' },
-            { number: '3+', label: 'Years Experience' },
-            { number: '4+', label: 'Happy Clients' },
-            { number: '10+', label: 'Technologies' }
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl lg:text-4xl font-bold gradient-text mb-2">
                 {stat.number}

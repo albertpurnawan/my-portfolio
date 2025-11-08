@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import { useAuthStore } from "@/stores/authStore";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,7 +20,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+          <Route path="/admin" element={<ProtectedAdmin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -28,3 +31,11 @@ const App = () => (
 );
 
 export default App;
+
+const ProtectedAdmin = () => {
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) {
+    return <AdminLogin />;
+  }
+  return <AdminDashboard />;
+};

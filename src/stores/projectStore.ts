@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface Project {
+export interface Project {
   id: number;
   title: string;
   category: string;
@@ -12,6 +12,9 @@ interface Project {
   date: string;
   github: string;
   demo: string;
+  showGithub?: boolean;
+  showDemo?: boolean;
+  embedUrl?: string;
 }
 
 interface ProjectStore {
@@ -19,6 +22,7 @@ interface ProjectStore {
   addProject: (project: Project) => void;
   updateProject: (id: number, project: Project) => void;
   deleteProject: (id: number) => void;
+  updateProjects: (projects: Project[]) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -59,6 +63,7 @@ export const useProjectStore = create<ProjectStore>()(
       deleteProject: (id) => set((state) => ({
         projects: state.projects.filter(project => project.id !== id)
       })),
+      updateProjects: (projects) => set(() => ({ projects })),
     }),
     {
       name: 'project-store',

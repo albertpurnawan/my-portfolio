@@ -1,12 +1,15 @@
 
-import { ExternalLink, Github, Calendar } from 'lucide-react';
+import { ExternalLink, Github, Calendar, Eye, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { useProjectStore } from '../stores/projectStore';
+import type { Project } from '@/stores/projectStore';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const ProjectsSection = () => {
   const { projects } = useProjectStore();
   const categories = ['All', 'Full Stack', 'Frontend', 'Mobile', 'Backend'];
   const [activeCategory, setActiveCategory] = useState('All');
+  const [previewProject, setPreviewProject] = useState<Project | null>(null);
 
   const filteredProjects = activeCategory === 'All' 
     ? projects 
@@ -85,26 +88,99 @@ const ProjectsSection = () => {
                   ))}
                 </div>
 
-                <div className="flex gap-4">
-                  <a
-                    href={project.github}
+                <div className="flex gap-4 items-center">
+                  <button
+                    onClick={() => setPreviewProject(project)}
                     className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
                   >
-                    <Github size={16} />
-                    <span className="text-sm">Code</span>
-                  </a>
-                  <a
-                    href={project.demo}
-                    className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
-                  >
-                    <ExternalLink size={16} />
-                    <span className="text-sm">Demo</span>
-                  </a>
+                    <Eye size={16} />
+                    <span className="text-sm">Preview</span>
+                  </button>
+                  {(!('showGithub' in project) || project.showGithub) && project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
+                    >
+                      <Github size={16} />
+                      <span className="text-sm">Code</span>
+                    </a>
+                  )}
+                  {project.github && (
+                    <button
+                      onClick={() => navigator.clipboard.writeText(project.github)}
+                      className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
+                      title="Copy code link"
+                    >
+                      <Copy size={16} />
+                      <span className="text-sm">Copy</span>
+                    </button>
+                  )}
+                  {(!('showDemo' in project) || project.showDemo) && project.demo && (
+                    <a
+                      href={project.demo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
+                    >
+                      <ExternalLink size={16} />
+                      <span className="text-sm">Demo</span>
+                    </a>
+                  )}
+                  {project.demo && (
+                    <button
+                      onClick={() => navigator.clipboard.writeText(project.demo)}
+                      className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent transition-colors"
+                      title="Copy demo link"
+                    >
+                      <Copy size={16} />
+                      <span className="text-sm">Copy</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           ))}
         </div>
+        <Dialog open={!!previewProject} onOpenChange={(open) => !open && setPreviewProject(null)}>
+          <DialogContent className="sm:max-w-3xl">
+            {previewProject && (
+              <div>
+                <DialogHeader>
+                  <DialogTitle>{previewProject.title}</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4 space-y-4">
+                  {previewProject.embedUrl ? (
+                    <div className="w-full h-[500px] rounded-md overflow-hidden border border-portfolio-blue">
+                      <iframe src={previewProject.embedUrl} className="w-full h-full" title="Project Preview" />
+                    </div>
+                  ) : (
+                    <img src={previewProject.image} alt={previewProject.title} className="w-full h-64 object-cover rounded-md" />
+                  )}
+                  <p className="text-sm text-portfolio-muted">{previewProject.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {previewProject.tech?.map((t: string, i: number) => (
+                      <span key={i} className="px-3 py-1 bg-portfolio-navy text-portfolio-accent text-xs rounded-full">{t}</span>
+                    ))}
+                  </div>
+                  <div className="flex gap-4">
+                    {(!('showGithub' in previewProject) || previewProject.showGithub) && previewProject.github && (
+                      <a href={previewProject.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent">
+                        <Github size={16} /> <span className="text-sm">Code</span>
+                      </a>
+                    )}
+                    {(!('showDemo' in previewProject) || previewProject.showDemo) && previewProject.demo && (
+                      <a href={previewProject.demo} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-portfolio-muted hover:text-portfolio-accent">
+                        <ExternalLink size={16} /> <span className="text-sm">Demo</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );

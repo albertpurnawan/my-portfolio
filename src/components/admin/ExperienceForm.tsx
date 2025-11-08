@@ -17,6 +17,7 @@ const ExperienceForm = ({ experience, onClose }: ExperienceFormProps) => {
   const [formData, setFormData] = useState({
     position: '',
     company: '',
+    location: '',
     period: '',
     description: '',
     achievements: ['']
@@ -27,6 +28,7 @@ const ExperienceForm = ({ experience, onClose }: ExperienceFormProps) => {
       setFormData({
         position: experience.position,
         company: experience.company,
+        location: experience.location || '',
         period: experience.period,
         description: experience.description,
         achievements: experience.achievements || ['']
@@ -98,15 +100,26 @@ const ExperienceForm = ({ experience, onClose }: ExperienceFormProps) => {
               />
             </div>
 
-            <div>
-              <Label htmlFor="company">Perusahaan</Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => handleChange('company', e.target.value)}
-                required
-              />
-            </div>
+          <div>
+            <Label htmlFor="company">Perusahaan</Label>
+            <Input
+              id="company"
+              value={formData.company}
+              onChange={(e) => handleChange('company', e.target.value)}
+              required
+            />
+          </div>
+          </div>
+
+          <div>
+            <Label htmlFor="location">Lokasi</Label>
+            <Input
+              id="location"
+              value={formData.location}
+              onChange={(e) => handleChange('location', e.target.value)}
+              placeholder="Jakarta, Indonesia"
+              required
+            />
           </div>
 
           <div>
