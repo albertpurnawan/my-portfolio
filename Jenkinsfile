@@ -12,43 +12,14 @@ pipeline {
     ansiColor('xterm')
   }
 
-  parameters {
-    choice(name: 'TARGET_ENV_PORTFOLIO', choices: ['auto', 'staging', 'production'], description: 'Deployment target for portfolio')
-    string(name: 'APP_NAME_PORTFOLIO', description: 'Container name (e.g. my-portfolio)')
-    string(name: 'IMAGE_NAME_PORTFOLIO', description: 'Docker image:tag to build/run (e.g. my-portfolio:latest or username/my-portfolio:latest)')
-    string(name: 'HOST_PORT_PORTFOLIO', description: 'Host port to expose (e.g. 32000)')
-    string(name: 'CONTAINER_PORT_PORTFOLIO', description: 'Container port (e.g. 80)')
-    string(name: 'ENV_FILE_PORTFOLIO', description: 'Optional: absolute path to .env on host; leave blank to skip')
-    password(name: 'ADMIN_PASSWORD_PORTFOLIO', description: 'Admin password SHA-256 hash (64 hex). Passed as VITE_ADMIN_PASSWORD_HASH.')
-    string(name: 'ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO', defaultValue: '', description: 'Optional: Jenkins Secret Text ID containing SHA-256 hash')
-  }
-
-  environment {
-    APP_NAME_PORTFOLIO = "${params.APP_NAME_PORTFOLIO}"
-    IMAGE_NAME_PORTFOLIO = "${params.IMAGE_NAME_PORTFOLIO}"
-    HOST_PORT_PORTFOLIO = "${params.HOST_PORT_PORTFOLIO}"
-    CONTAINER_PORT_PORTFOLIO = "${params.CONTAINER_PORT_PORTFOLIO}"
-    ENV_FILE_PORTFOLIO = "${params.ENV_FILE_PORTFOLIO}"
-    ADMIN_PASSWORD_PORTFOLIO = "${params.ADMIN_PASSWORD_PORTFOLIO}"
-  }
+  // No parameters: values are taken from Jenkins server env.
 
   stages {
     stage('Resolve config') {
       steps {
         script {
-          def pick = { p, e ->
-            def ps = (p == null) ? '' : p.toString().trim()
-            def es = (e == null) ? '' : e.toString().trim()
-            return ps ? ps : es
-          }
-          env.APP_NAME_PORTFOLIO = pick(params.APP_NAME_PORTFOLIO, env.APP_NAME_PORTFOLIO)
-          env.IMAGE_NAME_PORTFOLIO = pick(params.IMAGE_NAME_PORTFOLIO, env.IMAGE_NAME_PORTFOLIO)
-          env.HOST_PORT_PORTFOLIO = pick(params.HOST_PORT_PORTFOLIO, env.HOST_PORT_PORTFOLIO)
-          env.CONTAINER_PORT_PORTFOLIO = pick(params.CONTAINER_PORT_PORTFOLIO, env.CONTAINER_PORT_PORTFOLIO)
-          env.ENV_FILE_PORTFOLIO = pick(params.ENV_FILE_PORTFOLIO, env.ENV_FILE_PORTFOLIO)
-          env.ADMIN_PASSWORD_PORTFOLIO = pick(params.ADMIN_PASSWORD_PORTFOLIO, env.ADMIN_PASSWORD_PORTFOLIO)
-          if (!env.ADMIN_PASSWORD_PORTFOLIO?.trim() && params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO?.trim()) {
-            withCredentials([string(credentialsId: params.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO, variable: 'ADMIN_HASH_SECRET')]) {
+          if (!env.ADMIN_PASSWORD_PORTFOLIO?.trim() && env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO?.trim()) {
+            withCredentials([string(credentialsId: env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO, variable: 'ADMIN_HASH_SECRET')]) {
               env.ADMIN_PASSWORD_PORTFOLIO = ADMIN_HASH_SECRET
             }
           }
