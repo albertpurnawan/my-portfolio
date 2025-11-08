@@ -35,6 +35,8 @@ pipeline {
       steps {
         checkout scm
         script {
+          // Trust mounted workspace directory for Git (fixes 'dubious ownership')
+          sh "git config --global --add safe.directory '${WORKSPACE}' || true"
           env.BRANCH = env.BRANCH_NAME ?: sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
           env.SHORT_SHA = env.GIT_COMMIT.take(7)
           echo "Branch: ${env.BRANCH}, Commit: ${env.SHORT_SHA}"
