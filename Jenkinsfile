@@ -65,7 +65,18 @@ pipeline {
     }
     stage('Prepare tools') {
       steps {
-        sh 'bash -lc "set -euxo pipefail; apt-get update; apt-get install -y --no-install-recommends docker.io docker-compose-plugin ca-certificates; docker version; (docker compose version || docker-compose version || true); node -v && npm -v"'
+        sh 'bash -lc "set -euxo pipefail; \\
+          apt-get update; \\
+          apt-get install -y --no-install-recommends docker.io ca-certificates python3-pip; \\
+          (apt-get install -y --no-install-recommends docker-compose-plugin || true); \\
+          docker version; \\
+          if docker compose version >/dev/null 2>&1; then \\
+            docker compose version; \\
+          else \\
+            pip3 install --no-cache-dir docker-compose; \\
+            docker-compose version; \\
+          fi; \\
+          node -v && npm -v"'
       }
     }
 
