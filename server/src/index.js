@@ -309,6 +309,7 @@ app.post('/api/data', requireAdmin, async (req, res) => {
 });
 
 async function start() {
+  await waitForDb();
   await migrate();
   await seedIfEmpty();
   app.listen(PORT, () => {
@@ -320,3 +321,16 @@ start().catch(err => {
   console.error('Failed to start', err);
   process.exit(1);
 });
+
+async function waitForDb(retries = 30, delayMs = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await pool.query('SELECT 1');
+      return;
+    } catch (e) {
+      console.warn(`DB not ready, retrying... (${i + 1}/${retries})`);
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  throw new Error('Database not reachable after retries');
+}

@@ -10,6 +10,11 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U folio -d folio"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   api:
     build: ./server
@@ -23,7 +28,8 @@ services:
       ADMIN_PASSWORD_HASH: ${VITE_ADMIN_PASSWORD_HASH:-}
       CORS_ORIGIN: http://localhost:5173
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "${API_PORT:-32001}:80"
 
