@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,9 +8,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useProjectStore } from '../../stores/projectStore';
 import ProjectForm from './ProjectForm';
+import { adminHeaders } from '@/lib/api';
 
 const ProjectsAdmin = () => {
-  const { projects, deleteProject } = useProjectStore();
+  const { projects, deleteProject, updateProjects } = useProjectStore();
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch('/api/projects');
+      updateProjects(await res.json());
+    };
+    load();
+  }, [updateProjects]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
 
@@ -19,10 +27,10 @@ const ProjectsAdmin = () => {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus project ini?')) {
-      deleteProject(id);
-    }
+  const handleDelete = async (id: number) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus project ini?')) return;
+    await fetch(`/api/projects/${id}`, { method: 'DELETE', headers: adminHeaders() });
+    updateProjects(projects.filter(p => p.id !== id));
   };
 
   const handleFormClose = () => {

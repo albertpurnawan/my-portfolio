@@ -1,8 +1,18 @@
 import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { useProfileStore } from '../stores/profileStore';
+import { useEffect } from 'react';
 
 const ProfileSection = () => {
-  const { profile } = useProfileStore();
+  const { profile, updateProfile } = useProfileStore();
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/profile');
+        updateProfile(await res.json());
+      } catch {}
+    };
+    load();
+  }, [updateProfile]);
 
   return (
     <section id="profile" className="min-h-screen flex items-center justify-center pt-16">

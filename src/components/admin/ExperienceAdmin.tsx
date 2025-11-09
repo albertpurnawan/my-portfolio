@@ -1,13 +1,21 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useExperienceStore } from '../../stores/experienceStore';
 import ExperienceForm from './ExperienceForm';
+import { adminHeaders } from '@/lib/api';
 
 const ExperienceAdmin = () => {
-  const { experiences, deleteExperience } = useExperienceStore();
+  const { experiences, deleteExperience, updateExperiences } = useExperienceStore();
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch('/api/experiences');
+      updateExperiences(await res.json());
+    };
+    load();
+  }, [updateExperiences]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingExperience, setEditingExperience] = useState(null);
 
@@ -16,10 +24,10 @@ const ExperienceAdmin = () => {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus pengalaman ini?')) {
-      deleteExperience(id);
-    }
+  const handleDelete = async (id: number) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus pengalaman ini?')) return;
+    await fetch(`/api/experiences/${id}`, { method: 'DELETE', headers: adminHeaders() });
+    updateExperiences(experiences.filter(e => e.id !== id));
   };
 
   const handleFormClose = () => {

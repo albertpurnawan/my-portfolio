@@ -2,9 +2,20 @@
 import { Code } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { useAboutStore } from '@/stores/aboutStore';
+import { useEffect } from 'react';
 
 const AboutSection = () => {
-  const { skills, stats } = useAboutStore();
+  const { skills, stats, updateSkills, updateStats, updateEducation } = useAboutStore() as any;
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch('/api/about');
+      const data = await res.json();
+      updateSkills(data.skills || []);
+      updateStats(data.stats || []);
+      updateEducation(data.education || []);
+    };
+    load();
+  }, [updateSkills, updateStats, updateEducation]);
   const renderIcon = (name?: string) => {
     if (!name) return <Code size={24} />;
     const IconComp = (LucideIcons as unknown)[name];

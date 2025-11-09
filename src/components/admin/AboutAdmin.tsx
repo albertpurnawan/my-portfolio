@@ -5,6 +5,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAboutStore } from '@/stores/aboutStore';
+import { useEffect } from 'react';
+import { adminHeaders } from '@/lib/api';
 
 const AboutAdmin = () => {
   const { skills, stats, education, updateSkills, updateStats, updateEducation } = useAboutStore();
@@ -12,12 +14,26 @@ const AboutAdmin = () => {
   const [statsData, setStatsData] = useState(stats);
   const [educationData, setEducationData] = useState(education);
 
-  const saveAll = () => {
-    updateSkills(skillsData);
-    updateStats(statsData);
-    updateEducation(educationData);
+  const saveAll = async () => {
+    await fetch('/api/about', { method: 'PUT', headers: adminHeaders(), body: JSON.stringify({ skills: skillsData, stats: statsData, education: educationData }) });
+    const res = await fetch('/api/about');
+    const data = await res.json();
+    updateSkills(data.skills || []);
+    updateStats(data.stats || []);
+    updateEducation(data.education || []);
     alert('About content updated');
   };
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch('/api/about');
+      const data = await res.json();
+      setSkillsData(data.skills || []);
+      setStatsData(data.stats || []);
+      setEducationData(data.education || []);
+    };
+    load();
+  }, []);
 
   return (
     <div className="space-y-6">

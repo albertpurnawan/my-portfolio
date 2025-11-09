@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect } from 'react';
 import { useProfileStore } from '../../stores/profileStore';
+import { adminHeaders } from '@/lib/api';
 
 const ProfileAdmin = () => {
   const { profile, updateProfile } = useProfileStore();
@@ -19,15 +21,35 @@ const ProfileAdmin = () => {
     profileImage: profile.profileImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfile(formData);
+    await fetch('/api/profile', { method: 'PUT', headers: adminHeaders(), body: JSON.stringify(formData) });
+    const res = await fetch('/api/profile');
+    updateProfile(await res.json());
     alert('Profile berhasil diupdate!');
   };
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      updateProfile(data);
+      setFormData({
+        name: data.name,
+        location: data.location,
+        description: data.description,
+        email: data.email,
+        github: data.github,
+        linkedin: data.linkedin,
+        profileImage: data.profileImage,
+      });
+    };
+    load();
+  }, [updateProfile]);
 
   return (
     <div className="space-y-6">

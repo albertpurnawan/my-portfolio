@@ -1,9 +1,19 @@
 
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import { useExperienceStore } from '@/stores/experienceStore';
+import { useEffect } from 'react';
 
 const ExperienceSection = () => {
-  const { experiences: storeExperiences } = useExperienceStore();
+  const { experiences: storeExperiences, updateExperiences } = useExperienceStore();
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/experiences');
+        updateExperiences(await res.json());
+      } catch {}
+    };
+    load();
+  }, [updateExperiences]);
 
   const education = [
     {

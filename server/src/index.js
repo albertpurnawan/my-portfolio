@@ -1,0 +1,200 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { pool, migrate } from './db.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 8080;
+const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN || '';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
+
+app.use(express.json({ limit: '2mb' }));
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean) || '*',
+  credentials: false,
+}));
+
+function requireAdmin(req, res, next) {
+  const auth = req.headers['authorization'] || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  const passHash = req.headers['x-admin-password-hash'] || '';
+  const tokenOk = ADMIN_API_TOKEN && token === ADMIN_API_TOKEN;
+  const passOk = ADMIN_PASSWORD_HASH && passHash === ADMIN_PASSWORD_HASH;
+  if (!tokenOk && !passOk) return res.status(401).json({ error: 'Unauthorized' });
+  next();
+}
+
+// Projects
+app.get('/api/projects', async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM projects ORDER BY id DESC');
+  const data = rows.map(r => ({
+    id: r.id,
+    title: r.title,
+    category: r.category,
+    description: r.description,
+    image: r.image,
+    tech: r.tech || [],
+    date: r.date,
+    github: r.github,
+    demo: r.demo,
+    showGithub: r.show_github,
+    showDemo: r.show_demo,
+    embedUrl: r.embed_url,
+  }));
+  res.json(data);
+});
+
+app.post('/api/projects', requireAdmin, async (req, res) => {
+  const p = req.body || {};
+  const tech = Array.isArray(p.tech) ? p.tech : [];
+  const { rows } = await pool.query(
+    `INSERT INTO projects (title, category, description, image, tech, date, github, demo, show_github, show_demo, embed_url)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+     RETURNING *`,
+    [p.title, p.category, p.description, p.image, tech, p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl]
+  );
+  res.status(201).json(rows[0]);
+});
+
+app.put('/api/projects/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const p = req.body || {};
+  const tech = Array.isArray(p.tech) ? p.tech : [];
+  const { rows } = await pool.query(
+    `UPDATE projects
+     SET title=$1, category=$2, description=$3, image=$4, tech=$5, date=$6, github=$7, demo=$8, show_github=$9, show_demo=$10, embed_url=$11, updated_at=now()
+     WHERE id=$12 RETURNING *`,
+    [p.title, p.category, p.description, p.image, tech, p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl, id]
+  );
+  if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+  res.json(rows[0]);
+});
+
+app.delete('/api/projects/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  await pool.query('DELETE FROM projects WHERE id=$1', [id]);
+  res.status(204).end();
+});
+
+// Experience
+app.get('/api/experiences', async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM experiences ORDER BY id ASC');
+  res.json(rows.map(e => ({
+    id: e.id,
+    position: e.position,
+    company: e.company,
+    location: e.location,
+    period: e.period,
+    description: e.description || [],
+    achievements: e.achievements || [],
+  })));
+});
+
+app.post('/api/experiences', requireAdmin, async (req, res) => {
+  const e = req.body || {};
+  const { rows } = await pool.query(
+    `INSERT INTO experiences (position, company, location, period, description, achievements)
+     VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+    [e.position, e.company, e.location, e.period, e.description || [], e.achievements || []]
+  );
+  res.status(201).json(rows[0]);
+});
+
+app.put('/api/experiences/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const e = req.body || {};
+  const { rows } = await pool.query(
+    `UPDATE experiences SET position=$1, company=$2, location=$3, period=$4, description=$5, achievements=$6 WHERE id=$7 RETURNING *`,
+    [e.position, e.company, e.location, e.period, e.description || [], e.achievements || [], id]
+  );
+  if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+  res.json(rows[0]);
+});
+
+app.delete('/api/experiences/:id', requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  await pool.query('DELETE FROM experiences WHERE id=$1', [id]);
+  res.status(204).end();
+});
+
+// Profile
+app.get('/api/profile', async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM profile WHERE id=1');
+  const p = rows[0] || {};
+  res.json({
+    name: p.name || '',
+    location: p.location || '',
+    description: p.description || '',
+    email: p.email || '',
+    github: p.github || '',
+    linkedin: p.linkedin || '',
+    profileImage: p.profile_image || '',
+  });
+});
+
+app.put('/api/profile', requireAdmin, async (req, res) => {
+  const p = req.body || {};
+  const { rows } = await pool.query(
+    `UPDATE profile SET name=$1, location=$2, description=$3, email=$4, github=$5, linkedin=$6, profile_image=$7 WHERE id=1 RETURNING *`,
+    [p.name, p.location, p.description, p.email, p.github, p.linkedin, p.profileImage]
+  );
+  res.json(rows[0]);
+});
+
+// About
+app.get('/api/about', async (req, res) => {
+  const [skills, stats, education] = await Promise.all([
+    pool.query('SELECT * FROM about_skills ORDER BY id ASC'),
+    pool.query('SELECT * FROM about_stats ORDER BY id ASC'),
+    pool.query('SELECT * FROM about_education ORDER BY id ASC'),
+  ]);
+  res.json({
+    skills: skills.rows,
+    stats: stats.rows,
+    education: education.rows,
+  });
+});
+
+app.put('/api/about', requireAdmin, async (req, res) => {
+  const a = req.body || {};
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('DELETE FROM about_skills');
+    await client.query('DELETE FROM about_stats');
+    await client.query('DELETE FROM about_education');
+
+    for (const s of a.skills || []) {
+      await client.query('INSERT INTO about_skills (title, description, projects, icon) VALUES ($1,$2,$3,$4)', [s.title, s.description, s.projects, s.icon]);
+    }
+    for (const s of a.stats || []) {
+      await client.query('INSERT INTO about_stats (number, label) VALUES ($1,$2)', [s.number, s.label]);
+    }
+    for (const e of a.education || []) {
+      await client.query('INSERT INTO about_education (degree, school, period, gpa) VALUES ($1,$2,$3,$4)', [e.degree, e.school, e.period, e.gpa]);
+    }
+    await client.query('COMMIT');
+    res.json({ ok: true });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: 'Failed to update about' });
+  } finally {
+    client.release();
+  }
+});
+
+app.get('/healthz', (req, res) => res.json({ ok: true }));
+
+async function start() {
+  await migrate();
+  app.listen(PORT, () => {
+    console.log(`API listening on port ${PORT}`);
+  });
+}
+
+start().catch(err => {
+  console.error('Failed to start', err);
+  process.exit(1);
+});

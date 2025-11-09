@@ -1,15 +1,29 @@
 
 import { ExternalLink, Github, Calendar, Eye, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useProjectStore } from '../stores/projectStore';
 import type { Project } from '@/stores/projectStore';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const ProjectsSection = () => {
-  const { projects } = useProjectStore();
+  const { projects, updateProjects } = useProjectStore();
   const categories = ['All', 'Full Stack', 'Frontend', 'Mobile', 'Backend'];
   const [activeCategory, setActiveCategory] = useState('All');
   const [previewProject, setPreviewProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    // Load from API
+    const load = async () => {
+      try {
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        updateProjects(data);
+      } catch (e) {
+        // ignore
+      }
+    };
+    load();
+  }, [updateProjects]);
 
   const filteredProjects = activeCategory === 'All' 
     ? projects 

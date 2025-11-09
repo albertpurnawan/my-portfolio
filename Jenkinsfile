@@ -14,13 +14,18 @@ pipeline {
 
   environment {
     // Fallback defaults; override via Jenkins Global/Node env
+    // Web image kept for backward compat, but we now use docker-compose to run all services.
     IMAGE_NAME_PORTFOLIO = "${env.IMAGE_NAME_PORTFOLIO ?: 'my-portfolio:latest'}"
     CONTAINER_NAME_PORTFOLIO = "${env.CONTAINER_NAME_PORTFOLIO ?: 'my-portfolio'}"
-    PORT_HOST = "${env.PORT_HOST ?: '32000'}"
-    PORT_CONTAINER = "${env.PORT_CONTAINER ?: '80'}"
+    PORT_HOST = "${env.PORT_HOST ?: '32000'}" // legacy var, not used with compose
+    PORT_CONTAINER = "${env.PORT_CONTAINER ?: '80'}" // legacy var, not used with compose
     ENV_FILE_PORTFOLIO = "${env.ENV_FILE_PORTFOLIO ?: ''}"
     ADMIN_PASSWORD_PORTFOLIO = "${env.ADMIN_PASSWORD_PORTFOLIO ?: ''}"
     ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO = "${env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO ?: ''}"
+    // Compose env overrides
+    WEB_PORT = "${env.WEB_PORT ?: '32000'}"
+    API_PORT = "${env.API_PORT ?: '8080'}"
+    DB_PORT = "${env.DB_PORT ?: '5432'}"
   }
 
   stages {
@@ -89,26 +94,20 @@ pipeline {
       }
     }
 
-    stage('Build Docker image') {
-      steps {
-        sh 'docker build --build-arg VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO} -t ${IMAGE_NAME_PORTFOLIO} .'
-      }
-    }
-
-    stage('Deploy locally') {
+    stage('Build & Deploy (docker-compose)') {
       steps {
         script {
-          echo "🚀 Deploying ${IMAGE_NAME_PORTFOLIO} on this server..."
-          def envArg = env.ENV_FILE_PORTFOLIO?.trim() ? "--env-file ${env.ENV_FILE_PORTFOLIO}" : ""
-          sh """
-            docker rm -f ${CONTAINER_NAME_PORTFOLIO} || true
-            docker run -d \
-              -p ${PORT_HOST}:${PORT_CONTAINER} \
-              --name ${CONTAINER_NAME_PORTFOLIO} \
-              --restart unless-stopped \
-              ${envArg} \
-              ${IMAGE_NAME_PORTFOLIO}
-          """
+          echo "🧱 Building and deploying with docker-compose..."
+          // If you store additional envs in a file, pass it similarly to compose via --env-file.
+          sh '''
+            set -euxo pipefail
+            docker compose down || true
+            WEB_PORT=''' + env.WEB_PORT + ''' \
+            API_PORT=''' + env.API_PORT + ''' \
+            DB_PORT=''' + env.DB_PORT + ''' \
+            VITE_ADMIN_PASSWORD_HASH=''' + (env.ADMIN_PASSWORD_PORTFOLIO ?: '') + ''' \
+            docker compose up -d --build
+          '''
         }
       }
     }

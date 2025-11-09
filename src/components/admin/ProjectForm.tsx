@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useProjectStore } from '../../stores/projectStore';
+import { adminHeaders } from '@/lib/api';
 
 interface Project {
   id: number;
@@ -30,7 +31,7 @@ interface ProjectFormProps {
 }
 
 const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
-  const { addProject, updateProject } = useProjectStore();
+  const { addProject, updateProject, updateProjects, projects } = useProjectStore();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -63,21 +64,19 @@ const ProjectForm = ({ project, onClose }: ProjectFormProps) => {
     }
   }, [project]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const projectData = {
+    const body = {
       ...formData,
       tech: formData.tech.split(',').map(t => t.trim()),
-      id: project?.id || Date.now()
-    };
-
+    } as any;
     if (project) {
-      updateProject(project.id, projectData);
+      await fetch(`/api/projects/${project.id}`, { method: 'PUT', headers: adminHeaders(), body: JSON.stringify(body) });
     } else {
-      addProject(projectData);
+      await fetch('/api/projects', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(body) });
     }
-
+    const res = await fetch('/api/projects');
+    updateProjects(await res.json());
     onClose();
   };
 

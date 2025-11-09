@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: folio
+      POSTGRES_USER: folio
+      POSTGRES_PASSWORD: folio_pw
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+
+  api:
+    build: ./server
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: folio
+      DB_PASSWORD: folio_pw
+      DB_NAME: folio
+      ADMIN_API_TOKEN: changeme-long-random
+      ADMIN_PASSWORD_HASH: ${VITE_ADMIN_PASSWORD_HASH:-}
+      CORS_ORIGIN: http://localhost:5173
+    depends_on:
+      - db
+    ports:
+      - "${API_PORT:-8080}:8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_ADMIN_PASSWORD_HASH: ${VITE_ADMIN_PASSWORD_HASH:-}
+    ports:
+      - "${WEB_PORT:-32000}:80"
+    depends_on:
+      - api
+
+volumes:
+  db_data:
