@@ -187,6 +187,7 @@ app.put('/api/about', requireAdmin, async (req, res) => {
 });
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.get('/api/healthz', (req, res) => res.json({ ok: true }));
 app.post('/admin/reseed', requireAdmin, async (req, res) => {
   try {
     await reseedDefaults();

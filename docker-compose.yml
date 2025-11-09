@@ -24,7 +24,8 @@ services:
       CORS_ORIGIN: http://localhost:5173
     depends_on:
       - db
-    # Expose only to the docker network; nginx reverse proxy reaches it via service name
+    ports:
+      - "${API_PORT:-32001}:80"
 
   web:
     build:
@@ -36,6 +37,8 @@ services:
       - "${WEB_PORT:-32000}:80"
     depends_on:
       - api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   db_data:
