@@ -68,15 +68,14 @@ pipeline {
         sh '''
           bash -lc 'set -euxo pipefail;
             apt-get update;
-            apt-get install -y --no-install-recommends docker.io ca-certificates python3-pip;
-            (apt-get install -y --no-install-recommends docker-compose-plugin || true);
+            apt-get install -y --no-install-recommends docker.io ca-certificates;
+            (apt-get install -y --no-install-recommends docker-compose-plugin \
+              || apt-get install -y --no-install-recommends docker-compose \
+              || true);
             docker version;
-            if docker compose version >/dev/null 2>&1; then
-              docker compose version;
-            else
-              pip3 install --no-cache-dir docker-compose;
-              docker-compose version;
-            fi;
+            if docker compose version >/dev/null 2>&1; then docker compose version; \
+            elif command -v docker-compose >/dev/null 2>&1; then docker-compose version; \
+            else echo "docker compose/docker-compose not available" >&2; exit 1; fi;
             node -v && npm -v'
         '''
       }
