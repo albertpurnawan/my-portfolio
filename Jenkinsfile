@@ -65,18 +65,20 @@ pipeline {
     }
     stage('Prepare tools') {
       steps {
-        sh 'bash -lc "set -euxo pipefail; \\
-          apt-get update; \\
-          apt-get install -y --no-install-recommends docker.io ca-certificates python3-pip; \\
-          (apt-get install -y --no-install-recommends docker-compose-plugin || true); \\
-          docker version; \\
-          if docker compose version >/dev/null 2>&1; then \\
-            docker compose version; \\
-          else \\
-            pip3 install --no-cache-dir docker-compose; \\
-            docker-compose version; \\
-          fi; \\
-          node -v && npm -v"'
+        sh '''
+          bash -lc 'set -euxo pipefail;
+            apt-get update;
+            apt-get install -y --no-install-recommends docker.io ca-certificates python3-pip;
+            (apt-get install -y --no-install-recommends docker-compose-plugin || true);
+            docker version;
+            if docker compose version >/dev/null 2>&1; then
+              docker compose version;
+            else
+              pip3 install --no-cache-dir docker-compose;
+              docker-compose version;
+            fi;
+            node -v && npm -v'
+        '''
       }
     }
 
@@ -109,23 +111,19 @@ pipeline {
       steps {
         script {
           echo "🧱 Building and deploying with docker-compose..."
-          def cmd = """
-            bash -lc 'set -euxo pipefail; \
-              if docker compose version >/dev/null 2>&1; then \
-                COMPOSE="docker compose"; \
-              elif command -v docker-compose >/dev/null 2>&1; then \
-                COMPOSE="docker-compose"; \
-              else \
-                echo "docker compose/docker-compose not available" >&2; exit 1; \
-              fi; \
-              \
-              \
-              \
-              ${env.ENV_FILE_PORTFOLIO?.trim() ? "ENV_FILE_ARG=\"--env-file ${env.ENV_FILE_PORTFOLIO}\"" : "true"}; \
-              $COMPOSE down || true; \
-              WEB_PORT=${env.WEB_PORT} API_PORT=${env.API_PORT} DB_PORT=${env.DB_PORT} VITE_ADMIN_PASSWORD_HASH=${env.ADMIN_PASSWORD_PORTFOLIO ?: ''} $COMPOSE up -d --build'
-          """
-          sh cmd
+          sh '''
+            bash -lc 'set -euxo pipefail;
+              if docker compose version >/dev/null 2>&1; then
+                COMPOSE="docker compose";
+              elif command -v docker-compose >/dev/null 2>&1; then
+                COMPOSE="docker-compose";
+              else
+                echo "docker compose/docker-compose not available" >&2; exit 1;
+              fi;
+              if [ -n "${ENV_FILE_PORTFOLIO}" ]; then ENV_FILE_ARG="--env-file ${ENV_FILE_PORTFOLIO}"; else ENV_FILE_ARG=""; fi;
+              $COMPOSE down || true;
+              WEB_PORT=${WEB_PORT} API_PORT=${API_PORT} DB_PORT=${DB_PORT} VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO:-} $COMPOSE up -d --build'
+          '''
         }
       }
     }
