@@ -10,29 +10,68 @@ export const profileSeed = {
 
 export const projectsSeed = [
   {
-    title: 'E-Commerce Platform',
+    title: 'Freelance‑Monitor',
     category: 'Full Stack',
-    description: 'Modern e-commerce platform built with React, Node.js, and PostgreSQL. Features include user authentication, payment integration, and admin dashboard.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop',
-    tech: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
-    date: '2024',
-    github: 'https://github.com/albertpurnawan?tab=repositories',
-    demo: 'https://example.com',
+    description: 'Aplikasi untuk memonitor aktivitas freelancing: tugas, waktu, pengeluaran, dan pendapatan.',
+    image: '/placeholder.svg',
+    tech: ['React/Vue', 'Node.js', 'PostgreSQL/MySQL', 'Docker', 'Cron'],
+    date: '2025',
+    github: 'https://github.com/albertpurnawan/freelance-monitor',
+    demo: 'https://freelance.jonathan-ap.com',
     showGithub: true,
     showDemo: true,
     embedUrl: ''
   },
   {
-    title: 'Task Management App',
+    title: 'My‑Portfolio',
     category: 'Frontend',
-    description: 'Responsive task management application with drag-and-drop functionality, real-time updates, and team collaboration features.',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&h=300&fit=crop',
-    tech: ['Vue.js', 'Vuex', 'Socket.io', 'Tailwind'],
-    date: '2024',
-    github: 'https://github.com/albertpurnawan?tab=repositories',
-    demo: 'https://example.com',
+    description: 'Situs personal/portofolio yang menampilkan proyek, blog, dan profil profesional.',
+    image: '/placeholder.svg',
+    tech: ['React', 'Tailwind', 'Docker', 'Nginx'],
+    date: '2025',
+    github: 'https://github.com/albertpurnawan/my-portfolio',
+    demo: 'https://jonathan-ap.com',
     showGithub: true,
     showDemo: true,
+    embedUrl: ''
+  },
+  {
+    title: 'Chatbot',
+    category: 'Full Stack',
+    description: 'Aplikasi chatbot AI untuk pencatatan keuangan, integrasi @google/genai, render markdown.',
+    image: '/placeholder.svg',
+    tech: ['React 18', 'TypeScript', 'Vite', 'Node.js (ESM)', '@google/genai', 'Docker'],
+    date: '2025',
+    github: 'https://github.com/albertpurnawan/chatbot',
+    demo: 'https://chatbot.jonathan-ap.com',
+    showGithub: true,
+    showDemo: true,
+    embedUrl: ''
+  },
+  {
+    title: 'SehatDompet',
+    category: 'Full Stack',
+    description: 'Aplikasi kesehatan keuangan untuk mengatur pengeluaran, laporan, dan analisis.',
+    image: '/placeholder.svg',
+    tech: ['React/Vue', 'TypeScript', 'Node.js/Go', 'PostgreSQL/SQLite', 'Docker'],
+    date: '2025',
+    github: 'https://github.com/albertpurnawan/sehatdompet',
+    demo: '',
+    showGithub: true,
+    showDemo: false,
+    embedUrl: ''
+  },
+  {
+    title: 'POS',
+    category: 'Full Stack',
+    description: 'Aplikasi Point‑Of‑Sale untuk transaksi, inventaris, dan laporan untuk toko/bisnis kecil.',
+    image: '/placeholder.svg',
+    tech: ['Vue 3', 'Tailwind CSS', 'Node.js/Express atau Go', 'PostgreSQL/MySQL', 'Docker'],
+    date: '2025',
+    github: 'https://github.com/albertpurnawan/POS',
+    demo: '',
+    showGithub: true,
+    showDemo: false,
     embedUrl: ''
   }
 ];
@@ -152,4 +191,3 @@ export const aboutEducationSeed = [
   { degree: 'Bachelor of Computer Science', school: 'Bina Nusantara University', period: 'Sep 2019 – Apr 2023', gpa: 'GPA: 3.44 / 4.00 — Graduated in 3.5 years; KMK activist; Internship at PT Mayora Indah Tbk' },
   { degree: 'Full-Stack Web Development Bootcamp', school: 'Binar Academy', period: 'Mar 2021 – Oct 2021', gpa: 'Rated “Very Good” (4.6/5) in Hard Skills' },
 ];
-
