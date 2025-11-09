@@ -54,11 +54,12 @@ app.get('/api/projects', asyncHandler(async (req, res) => {
 app.post('/api/projects', requireAdmin, asyncHandler(async (req, res) => {
   const p = req.body || {};
   const tech = Array.isArray(p.tech) ? p.tech : [];
+  const techJson = JSON.stringify(tech);
   const { rows } = await pool.query(
     `INSERT INTO projects (title, category, description, image, tech, date, github, demo, show_github, show_demo, embed_url)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
      RETURNING *`,
-    [p.title, p.category, p.description, p.image, tech, p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl]
+    [p.title || '', p.category || '', p.description || '', p.image || '', techJson, p.date || '', p.github || '', p.demo || '', !!p.showGithub, !!p.showDemo, p.embedUrl || '']
   );
   res.status(201).json(rows[0]);
 }));
@@ -67,11 +68,12 @@ app.put('/api/projects/:id', requireAdmin, asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   const p = req.body || {};
   const tech = Array.isArray(p.tech) ? p.tech : [];
+  const techJson = JSON.stringify(tech);
   const { rows } = await pool.query(
     `UPDATE projects
      SET title=$1, category=$2, description=$3, image=$4, tech=$5, date=$6, github=$7, demo=$8, show_github=$9, show_demo=$10, embed_url=$11, updated_at=now()
      WHERE id=$12 RETURNING *`,
-    [p.title, p.category, p.description, p.image, tech, p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl, id]
+    [p.title || '', p.category || '', p.description || '', p.image || '', techJson, p.date || '', p.github || '', p.demo || '', !!p.showGithub, !!p.showDemo, p.embedUrl || '', id]
   );
   if (!rows[0]) return res.status(404).json({ error: 'Not found' });
   res.json(rows[0]);
@@ -314,8 +316,8 @@ app.post('/api/data', requireAdmin, asyncHandler(async (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error('API error:', err?.message || err);
-  res.status(500).json({ error: 'Internal Server Error' });
+  console.error('API error:', err?.stack || err?.message || err);
+  res.status(500).json({ error: 'Internal Server Error', message: err?.message || undefined });
 });
 
 async function start() {
