@@ -24,7 +24,7 @@ pipeline {
     ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO = "${env.ADMIN_PASSWORD_CREDENTIALS_ID_PORTFOLIO ?: ''}"
     // Compose env overrides
     WEB_PORT = "${env.WEB_PORT ?: '32000'}"
-    API_PORT = "${env.API_PORT ?: '8080'}"
+    API_PORT = "${env.API_PORT ?: '32001'}"
     DB_PORT = "${env.DB_PORT ?: '5432'}"
   }
 
