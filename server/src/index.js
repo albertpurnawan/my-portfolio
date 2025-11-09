@@ -202,6 +202,14 @@ app.post('/admin/reseed', requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Reseed failed' });
   }
 });
+app.post('/api/admin/reseed', requireAdmin, async (req, res) => {
+  try {
+    await reseedDefaults();
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Reseed failed' });
+  }
+});
 
 // Aggregated data export/import for Admin Data Tools
 app.get('/api/data', asyncHandler(async (req, res) => {
