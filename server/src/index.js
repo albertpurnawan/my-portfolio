@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { pool, migrate } from './db.js';
+import { pool, migrate, seedIfEmpty, reseedDefaults } from './db.js';
 
 dotenv.config();
 
@@ -186,9 +186,18 @@ app.put('/api/about', requireAdmin, async (req, res) => {
 });
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.post('/admin/reseed', requireAdmin, async (req, res) => {
+  try {
+    await reseedDefaults();
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: 'Reseed failed' });
+  }
+});
 
 async function start() {
   await migrate();
+  await seedIfEmpty();
   app.listen(PORT, () => {
     console.log(`API listening on port ${PORT}`);
   });
