@@ -6,7 +6,7 @@ import { pool, migrate, seedIfEmpty, reseedDefaults } from './db.js';
 dotenv.config();
 
 const app = express();
-const PORT = 32001;
+const PORT = 80;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN || '';
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
 
