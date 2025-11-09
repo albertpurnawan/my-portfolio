@@ -119,9 +119,9 @@ pipeline {
               else
                 echo "docker compose/docker-compose not available" >&2; exit 1;
               fi;
-              if [ -n "${ENV_FILE_PORTFOLIO}" ]; then ENV_FILE_ARG="--env-file ${ENV_FILE_PORTFOLIO}"; else ENV_FILE_ARG=""; fi;
-              $COMPOSE down || true;
-              WEB_PORT=${WEB_PORT} API_PORT=${API_PORT} DB_PORT=${DB_PORT} VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO:-} $COMPOSE up -d --build'
+              if [ -n "${ENV_FILE_PORTFOLIO:-}" ]; then ENV_FILE_ARG="--env-file ${ENV_FILE_PORTFOLIO}"; else ENV_FILE_ARG=""; fi;
+              $COMPOSE $ENV_FILE_ARG down || true;
+              WEB_PORT=${WEB_PORT} API_PORT=${API_PORT} DB_PORT=${DB_PORT} VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO:-} $COMPOSE $ENV_FILE_ARG up -d --build'
           '''
         }
       }
