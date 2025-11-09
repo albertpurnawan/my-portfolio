@@ -6,7 +6,7 @@ import { pool, migrate, seedIfEmpty, reseedDefaults } from './db.js';
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT || 80);
+const PORT = 32001;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN || '';
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
 
@@ -16,6 +16,10 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean) || '*',
   credentials: false,
 }));
+
+function asyncHandler(fn) {
+  return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+}
 
 function requireAdmin(req, res, next) {
   const auth = req.headers['authorization'] || '';
@@ -28,7 +32,7 @@ function requireAdmin(req, res, next) {
 }
 
 // Projects
-app.get('/api/projects', async (req, res) => {
+app.get('/api/projects', asyncHandler(async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM projects ORDER BY id DESC');
   const data = rows.map(r => ({
     id: r.id,
@@ -45,9 +49,9 @@ app.get('/api/projects', async (req, res) => {
     embedUrl: r.embed_url,
   }));
   res.json(data);
-});
+}));
 
-app.post('/api/projects', requireAdmin, async (req, res) => {
+app.post('/api/projects', requireAdmin, asyncHandler(async (req, res) => {
   const p = req.body || {};
   const tech = Array.isArray(p.tech) ? p.tech : [];
   const { rows } = await pool.query(
@@ -57,9 +61,9 @@ app.post('/api/projects', requireAdmin, async (req, res) => {
     [p.title, p.category, p.description, p.image, tech, p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl]
   );
   res.status(201).json(rows[0]);
-});
+}));
 
-app.put('/api/projects/:id', requireAdmin, async (req, res) => {
+app.put('/api/projects/:id', requireAdmin, asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   const p = req.body || {};
   const tech = Array.isArray(p.tech) ? p.tech : [];
@@ -71,16 +75,16 @@ app.put('/api/projects/:id', requireAdmin, async (req, res) => {
   );
   if (!rows[0]) return res.status(404).json({ error: 'Not found' });
   res.json(rows[0]);
-});
+}));
 
-app.delete('/api/projects/:id', requireAdmin, async (req, res) => {
+app.delete('/api/projects/:id', requireAdmin, asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   await pool.query('DELETE FROM projects WHERE id=$1', [id]);
   res.status(204).end();
-});
+}));
 
 // Experience
-app.get('/api/experiences', async (req, res) => {
+app.get('/api/experiences', asyncHandler(async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM experiences ORDER BY id ASC');
   res.json(rows.map(e => ({
     id: e.id,
@@ -91,9 +95,9 @@ app.get('/api/experiences', async (req, res) => {
     description: e.description || [],
     achievements: e.achievements || [],
   })));
-});
+}));
 
-app.post('/api/experiences', requireAdmin, async (req, res) => {
+app.post('/api/experiences', requireAdmin, asyncHandler(async (req, res) => {
   const e = req.body || {};
   const { rows } = await pool.query(
     `INSERT INTO experiences (position, company, location, period, description, achievements)
@@ -101,9 +105,9 @@ app.post('/api/experiences', requireAdmin, async (req, res) => {
     [e.position, e.company, e.location, e.period, e.description || [], e.achievements || []]
   );
   res.status(201).json(rows[0]);
-});
+}));
 
-app.put('/api/experiences/:id', requireAdmin, async (req, res) => {
+app.put('/api/experiences/:id', requireAdmin, asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   const e = req.body || {};
   const { rows } = await pool.query(
@@ -112,16 +116,16 @@ app.put('/api/experiences/:id', requireAdmin, async (req, res) => {
   );
   if (!rows[0]) return res.status(404).json({ error: 'Not found' });
   res.json(rows[0]);
-});
+}));
 
-app.delete('/api/experiences/:id', requireAdmin, async (req, res) => {
+app.delete('/api/experiences/:id', requireAdmin, asyncHandler(async (req, res) => {
   const id = Number(req.params.id);
   await pool.query('DELETE FROM experiences WHERE id=$1', [id]);
   res.status(204).end();
-});
+}));
 
 // Profile
-app.get('/api/profile', async (req, res) => {
+app.get('/api/profile', asyncHandler(async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM profile WHERE id=1');
   const p = rows[0] || {};
   res.json({
@@ -133,19 +137,19 @@ app.get('/api/profile', async (req, res) => {
     linkedin: p.linkedin || '',
     profileImage: p.profile_image || '',
   });
-});
+}));
 
-app.put('/api/profile', requireAdmin, async (req, res) => {
+app.put('/api/profile', requireAdmin, asyncHandler(async (req, res) => {
   const p = req.body || {};
   const { rows } = await pool.query(
     `UPDATE profile SET name=$1, location=$2, description=$3, email=$4, github=$5, linkedin=$6, profile_image=$7 WHERE id=1 RETURNING *`,
     [p.name, p.location, p.description, p.email, p.github, p.linkedin, p.profileImage]
   );
   res.json(rows[0]);
-});
+}));
 
 // About
-app.get('/api/about', async (req, res) => {
+app.get('/api/about', asyncHandler(async (req, res) => {
   const [skills, stats, education] = await Promise.all([
     pool.query('SELECT * FROM about_skills ORDER BY id ASC'),
     pool.query('SELECT * FROM about_stats ORDER BY id ASC'),
@@ -156,9 +160,9 @@ app.get('/api/about', async (req, res) => {
     stats: stats.rows,
     education: education.rows,
   });
-});
+}));
 
-app.put('/api/about', requireAdmin, async (req, res) => {
+app.put('/api/about', requireAdmin, asyncHandler(async (req, res) => {
   const a = req.body || {};
   const client = await pool.connect();
   try {
@@ -180,11 +184,11 @@ app.put('/api/about', requireAdmin, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     await client.query('ROLLBACK');
-    res.status(500).json({ error: 'Failed to update about' });
+    throw err;
   } finally {
     client.release();
   }
-});
+}));
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 app.get('/api/healthz', (req, res) => res.json({ ok: true }));
@@ -198,7 +202,7 @@ app.post('/admin/reseed', requireAdmin, async (req, res) => {
 });
 
 // Aggregated data export/import for Admin Data Tools
-app.get('/api/data', async (req, res) => {
+app.get('/api/data', asyncHandler(async (req, res) => {
   const [projectsRes, experiencesRes, profileRes, aboutSkillsRes, aboutStatsRes, aboutEducationRes] = await Promise.all([
     pool.query('SELECT * FROM projects ORDER BY id DESC'),
     pool.query('SELECT * FROM experiences ORDER BY id ASC'),
@@ -250,9 +254,9 @@ app.get('/api/data', async (req, res) => {
       education: aboutEducationRes.rows,
     },
   });
-});
+}));
 
-app.post('/api/data', requireAdmin, async (req, res) => {
+app.post('/api/data', requireAdmin, asyncHandler(async (req, res) => {
   const body = req.body || {};
   const client = await pool.connect();
   try {
@@ -302,10 +306,16 @@ app.post('/api/data', requireAdmin, async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     await client.query('ROLLBACK');
-    res.status(400).json({ error: 'Invalid data' });
+    throw e;
   } finally {
     client.release();
   }
+}));
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('API error:', err?.message || err);
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
 async function start() {

@@ -31,7 +31,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "${API_PORT:-32001}:80"
+      - "32001:80"
 
   web:
     build:
@@ -40,7 +40,7 @@ services:
       args:
         VITE_ADMIN_PASSWORD_HASH: ${VITE_ADMIN_PASSWORD_HASH:-}
     ports:
-      - "${WEB_PORT:-32000}:80"
+      - "32000:80"
     depends_on:
       - api
     extra_hosts:
