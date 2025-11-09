@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useExperienceStore } from '../../stores/experienceStore';
+import { adminHeaders } from '@/lib/api';
 
 interface ExperienceFormProps {
   experience?: any;
@@ -13,7 +14,7 @@ interface ExperienceFormProps {
 }
 
 const ExperienceForm = ({ experience, onClose }: ExperienceFormProps) => {
-  const { addExperience, updateExperience } = useExperienceStore();
+  const { addExperience, updateExperience, updateExperiences } = useExperienceStore();
   const [formData, setFormData] = useState({
     position: '',
     company: '',
@@ -36,21 +37,23 @@ const ExperienceForm = ({ experience, onClose }: ExperienceFormProps) => {
     }
   }, [experience]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const experienceData = {
-      ...formData,
+    const body = {
+      position: formData.position,
+      company: formData.company,
+      location: formData.location,
+      period: formData.period,
+      description: formData.description.split('\n').map(s => s.trim()).filter(Boolean),
       achievements: formData.achievements.filter(a => a.trim() !== ''),
-      id: experience?.id || Date.now()
-    };
-
+    } as any;
     if (experience) {
-      updateExperience(experience.id, experienceData);
+      await fetch(`/api/experiences/${experience.id}`, { method: 'PUT', headers: adminHeaders(), body: JSON.stringify(body) });
     } else {
-      addExperience(experienceData);
+      await fetch('/api/experiences', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(body) });
     }
-
+    const res = await fetch('/api/experiences');
+    updateExperiences(await res.json());
     onClose();
   };
 

@@ -5,6 +5,7 @@ import { useAboutStore } from '@/stores/aboutStore';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
+import { adminHeaders } from '@/lib/api';
 
 const DataTools = () => {
   const projectStore = useProjectStore();
@@ -13,36 +14,37 @@ const DataTools = () => {
   const aboutStore = useAboutStore();
   const [json, setJson] = useState('');
 
-  const exportData = () => {
-    const data = {
-      projects: projectStore.projects,
-      experiences: experienceStore.experiences,
-      profile: profileStore.profile,
-      about: {
-        skills: aboutStore.skills,
-        stats: aboutStore.stats,
-        education: aboutStore.education,
-      },
-    };
-    setJson(JSON.stringify(data, null, 2));
+  const exportData = async () => {
+    try {
+      const res = await fetch('/api/data');
+      const data = await res.json();
+      setJson(JSON.stringify(data, null, 2));
+    } catch (e) {
+      alert('Failed to export from backend');
+    }
   };
 
-  const importData = () => {
+  const importData = async () => {
     try {
       const data = JSON.parse(json);
-      if (data.projects && Array.isArray(data.projects)) projectStore.updateProjects(data.projects);
-      if (data.experiences && Array.isArray(data.experiences)) {
-        experienceStore.updateExperiences(data.experiences);
-      }
-      if (data.profile && typeof data.profile === 'object') profileStore.updateProfile(data.profile);
-      if (data.about) {
-        if (Array.isArray(data.about.skills)) aboutStore.updateSkills(data.about.skills);
-        if (Array.isArray(data.about.stats)) aboutStore.updateStats(data.about.stats);
-        if (Array.isArray(data.about.education)) aboutStore.updateEducation(data.about.education);
-      }
-      alert('Data imported successfully');
+      await fetch('/api/data', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(data) });
+      // Refresh stores from backend
+      const [pRes, eRes, prRes, aRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/experiences'),
+        fetch('/api/profile'),
+        fetch('/api/about'),
+      ]);
+      projectStore.updateProjects(await pRes.json());
+      experienceStore.updateExperiences(await eRes.json());
+      profileStore.updateProfile(await prRes.json());
+      const aboutData = await aRes.json();
+      aboutStore.updateSkills(aboutData.skills || []);
+      aboutStore.updateStats(aboutData.stats || []);
+      aboutStore.updateEducation(aboutData.education || []);
+      alert('Data imported to backend successfully');
     } catch (e) {
-      alert('Invalid JSON');
+      alert('Invalid JSON or backend import failed');
     }
   };
 

@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 8080;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN || '';
 const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
 
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '16mb' }));
+app.use(express.urlencoded({ limit: '16mb', extended: true }));
 app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean) || '*',
   credentials: false,
@@ -192,6 +193,117 @@ app.post('/admin/reseed', requireAdmin, async (req, res) => {
     res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: 'Reseed failed' });
+  }
+});
+
+// Aggregated data export/import for Admin Data Tools
+app.get('/api/data', async (req, res) => {
+  const [projectsRes, experiencesRes, profileRes, aboutSkillsRes, aboutStatsRes, aboutEducationRes] = await Promise.all([
+    pool.query('SELECT * FROM projects ORDER BY id DESC'),
+    pool.query('SELECT * FROM experiences ORDER BY id ASC'),
+    pool.query('SELECT * FROM profile WHERE id=1'),
+    pool.query('SELECT * FROM about_skills ORDER BY id ASC'),
+    pool.query('SELECT * FROM about_stats ORDER BY id ASC'),
+    pool.query('SELECT * FROM about_education ORDER BY id ASC'),
+  ]);
+  const projects = projectsRes.rows.map(r => ({
+    id: r.id,
+    title: r.title,
+    category: r.category,
+    description: r.description,
+    image: r.image,
+    tech: r.tech || [],
+    date: r.date,
+    github: r.github,
+    demo: r.demo,
+    showGithub: r.show_github,
+    showDemo: r.show_demo,
+    embedUrl: r.embed_url,
+  }));
+  const experiences = experiencesRes.rows.map(e => ({
+    id: e.id,
+    position: e.position,
+    company: e.company,
+    location: e.location,
+    period: e.period,
+    description: e.description || [],
+    achievements: e.achievements || [],
+  }));
+  const p = profileRes.rows[0] || {};
+  const profile = {
+    name: p.name || '',
+    location: p.location || '',
+    description: p.description || '',
+    email: p.email || '',
+    github: p.github || '',
+    linkedin: p.linkedin || '',
+    profileImage: p.profile_image || '',
+  };
+  res.json({
+    projects,
+    experiences,
+    profile,
+    about: {
+      skills: aboutSkillsRes.rows,
+      stats: aboutStatsRes.rows,
+      education: aboutEducationRes.rows,
+    },
+  });
+});
+
+app.post('/api/data', requireAdmin, async (req, res) => {
+  const body = req.body || {};
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    // Replace all datasets if provided
+    if (body.profile && typeof body.profile === 'object') {
+      const pr = body.profile;
+      await client.query(
+        'UPDATE profile SET name=$1, location=$2, description=$3, email=$4, github=$5, linkedin=$6, profile_image=$7 WHERE id=1',
+        [pr.name, pr.location, pr.description, pr.email, pr.github, pr.linkedin, pr.profileImage]
+      );
+    }
+    if (Array.isArray(body.projects)) {
+      await client.query('DELETE FROM projects');
+      for (const p of body.projects) {
+        await client.query(
+          'INSERT INTO projects (title, category, description, image, tech, date, github, demo, show_github, show_demo, embed_url) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',
+          [p.title, p.category, p.description, p.image, JSON.stringify(p.tech || []), p.date, p.github, p.demo, !!p.showGithub, !!p.showDemo, p.embedUrl]
+        );
+      }
+    }
+    if (Array.isArray(body.experiences)) {
+      await client.query('DELETE FROM experiences');
+      for (const e of body.experiences) {
+        await client.query(
+          'INSERT INTO experiences (position, company, location, period, description, achievements) VALUES ($1,$2,$3,$4,$5,$6)',
+          [e.position, e.company, e.location, e.period, e.description || [], e.achievements || []]
+        );
+      }
+    }
+    if (body.about && typeof body.about === 'object') {
+      const a = body.about;
+      await client.query('DELETE FROM about_skills');
+      await client.query('DELETE FROM about_stats');
+      await client.query('DELETE FROM about_education');
+      for (const s of a.skills || []) {
+        await client.query('INSERT INTO about_skills (title, description, projects, icon) VALUES ($1,$2,$3,$4)', [s.title, s.description, s.projects, s.icon || null]);
+      }
+      for (const s of a.stats || []) {
+        await client.query('INSERT INTO about_stats (number, label) VALUES ($1,$2)', [s.number, s.label]);
+      }
+      for (const ed of a.education || []) {
+        await client.query('INSERT INTO about_education (degree, school, period, gpa) VALUES ($1,$2,$3,$4)', [ed.degree, ed.school, ed.period, ed.gpa || null]);
+      }
+    }
+    await client.query('COMMIT');
+    res.json({ ok: true });
+  } catch (e) {
+    await client.query('ROLLBACK');
+    res.status(400).json({ error: 'Invalid data' });
+  } finally {
+    client.release();
   }
 });
 
