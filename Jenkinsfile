@@ -130,8 +130,18 @@ pipeline {
               if [ -n "${ENV_FILE_PORTFOLIO:-}" ]; then ENV_FILE_ARG="--env-file ${ENV_FILE_PORTFOLIO}"; else ENV_FILE_ARG=""; fi;
               $COMPOSE $ENV_FILE_ARG down || true;
               WEB_PORT=${WEB_PORT} API_PORT=${API_PORT} DB_PORT=${DB_PORT} VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO:-} $COMPOSE $ENV_FILE_ARG up -d --build;
-              # Reseed defaults after services are up
-              curl -s -X POST -H "x-admin-password-hash: ${ADMIN_PASSWORD_PORTFOLIO}" http://localhost:${WEB_PORT}/api/admin/reseed || true'
+              # Wait for API to be healthy directly via API_PORT
+              echo "Waiting for API to be ready on :${API_PORT}...";
+              for i in $(seq 1 60); do \
+                if curl -fsS http://localhost:${API_PORT}/healthz >/dev/null; then echo "API ready"; break; fi; \
+                sleep 2; \
+              done;
+              # Reseed defaults via API directly (avoid depending on web proxy)
+              if [ -n "${ADMIN_PASSWORD_PORTFOLIO:-}" ]; then \
+                curl -fsS -X POST -H "x-admin-password-hash: ${ADMIN_PASSWORD_PORTFOLIO}" http://localhost:${API_PORT}/admin/reseed || echo "reseed call failed"; \
+              else \
+                echo "ADMIN_PASSWORD_PORTFOLIO not set; skipping reseed"; \
+              fi'
           '''
         }
       }
