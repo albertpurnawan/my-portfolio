@@ -322,7 +322,7 @@ async function start() {
   await waitForDb();
   await migrate();
   await seedIfEmpty();
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`API listening on port ${PORT}`);
   });
 }
