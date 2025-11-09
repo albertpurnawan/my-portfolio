@@ -33,8 +33,9 @@ const App = () => (
 export default App;
 
 const ProtectedAdmin = () => {
-  const { isAuthenticated } = useAuthStore();
-  if (!isAuthenticated) {
+  const { isAuthenticated, ensureSessionValid } = useAuthStore();
+  const valid = isAuthenticated && ensureSessionValid();
+  if (!valid) {
     return <AdminLogin />;
   }
   return <AdminDashboard />;

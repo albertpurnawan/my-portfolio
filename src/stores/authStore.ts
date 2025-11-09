@@ -4,8 +4,10 @@ import { persist } from 'zustand/middleware';
 interface AuthState {
   isAuthenticated: boolean;
   loggingIn: boolean;
+  expiresAt: number | null;
   loginWithPassword: (password: string) => Promise<boolean>;
   logout: () => void;
+  ensureSessionValid: () => boolean;
 }
 
 // Admin password hash from env (SHA-256 hex)
@@ -25,9 +27,10 @@ function looksLikeSha256Hex(s?: string): boolean {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isAuthenticated: false,
       loggingIn: false,
+      expiresAt: null,
       async loginWithPassword(password: string) {
         try {
           set({ loggingIn: true });
@@ -40,7 +43,8 @@ export const useAuthStore = create<AuthState>()(
           }
           const ok = targetHash && hashed === targetHash;
           if (ok) {
-            set({ isAuthenticated: true, loggingIn: false });
+            const oneDayMs = 24 * 60 * 60 * 1000;
+            set({ isAuthenticated: true, loggingIn: false, expiresAt: Date.now() + oneDayMs });
           } else {
             set({ loggingIn: false });
           }
@@ -51,9 +55,31 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       logout() {
-        set({ isAuthenticated: false });
+        set({ isAuthenticated: false, expiresAt: null });
       },
+      ensureSessionValid() {
+        const { isAuthenticated, expiresAt } = get();
+        if (!isAuthenticated) return false;
+        if (!expiresAt || Date.now() > expiresAt) {
+          set({ isAuthenticated: false, expiresAt: null });
+          return false;
+        }
+        return true;
+      }
     }),
-    { name: 'auth-store' }
+    {
+      name: 'auth-store',
+      onRehydrateStorage: () => (state?: AuthState) => {
+        try {
+          const exp: number | null | undefined = state?.expiresAt;
+          if (exp && Date.now() > exp) {
+            // Expired on hydration
+            useAuthStore.setState({ isAuthenticated: false, expiresAt: null });
+          }
+        } catch {
+          // ignore
+        }
+      }
+    }
   )
 );
