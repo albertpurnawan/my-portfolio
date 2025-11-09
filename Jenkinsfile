@@ -119,6 +119,14 @@ pipeline {
               else
                 echo "docker compose/docker-compose not available" >&2; exit 1;
               fi;
+              # Stop legacy single-container deployment if exists to free WEB_PORT
+              docker rm -f ${CONTAINER_NAME_PORTFOLIO} || true;
+              # Stop any containers currently binding WEB_PORT on host
+              ids=$(docker ps --format '{{.ID}} {{.Ports}}' | awk -v p="${WEB_PORT}" 'index($0, ":" p "->")>0 {print $1}');
+              if [ -n "$ids" ]; then
+                echo "Stopping containers using port ${WEB_PORT}: $ids";
+                docker rm -f $ids || true;
+              fi;
               if [ -n "${ENV_FILE_PORTFOLIO:-}" ]; then ENV_FILE_ARG="--env-file ${ENV_FILE_PORTFOLIO}"; else ENV_FILE_ARG=""; fi;
               $COMPOSE $ENV_FILE_ARG down || true;
               WEB_PORT=${WEB_PORT} API_PORT=${API_PORT} DB_PORT=${DB_PORT} VITE_ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_PORTFOLIO:-} $COMPOSE $ENV_FILE_ARG up -d --build'
