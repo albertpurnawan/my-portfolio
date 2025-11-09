@@ -122,7 +122,7 @@ pipeline {
               # Stop legacy single-container deployment if exists to free WEB_PORT
               docker rm -f ${CONTAINER_NAME_PORTFOLIO} || true;
               # Stop any containers currently binding WEB_PORT on host
-              ids=$(docker ps --format '{{.ID}} {{.Ports}}' | awk -v p="${WEB_PORT}" 'index($0, ":" p "->")>0 {print $1}');
+              ids=$(docker ps --format "{{.ID}} {{.Ports}}" | awk -v p="${WEB_PORT}" "index(\$0, \":\" p \"->\")>0 {print \$1}");
               if [ -n "$ids" ]; then
                 echo "Stopping containers using port ${WEB_PORT}: $ids";
                 docker rm -f $ids || true;
